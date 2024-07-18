@@ -146,8 +146,8 @@ async function getData() {
                         descCount ++;
 
                         locationNum ++;
-                        sqlconnection.end();
                     };
+                    sqlconnection.end();
                 });
             } else {
                 console.log("already inserted with id " + GetCount[0].id);
