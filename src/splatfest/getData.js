@@ -93,17 +93,17 @@ async function getData() {
     if (err.announced) {
         let event = 1;
         let title = "Splatfest";
-        let startDate = new Date(descData[0][5]);
-        let endDate = new Date(descData[0][6]);
+        let startDateFirst = new Date(descData[0][5]);
+        let endDateFirst = new Date(descData[0][6]);
         let created = new Date(Date.now());
         let uid = nanoid() + "@splatfest.awdawd.eu";
 
         var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatCal` WHERE `startDate` = ?';
-        sqlconnection.query(sqlGetDate, [ startDate ], function (error, GetCount) {
+        sqlconnection.query(sqlGetDate, [ startDateFirst ], function (error, GetCount) {
             if (error) throw error;
             if (GetCount[0].count === 0) {
                 var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?)';
-                sqlconnection.query(sqlInsert, [ event, title, startDate, endDate, created, uid ], function (error, insertResult) {
+                sqlconnection.query(sqlInsert, [ event, title, startDateFirst, endDateFirst, created, uid ], function (error, insertResult) {
                     if (error) throw error;
                     console.log("Splatfest Inserted");
                     let locationNum = 1;
