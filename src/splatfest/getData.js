@@ -51,7 +51,7 @@ async function getInfo() {
     for (let team of teamsAll) {
         let { name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
             let regionHtml = (new JSDOM(regionResponse.data));
-            let nameAll = regionHtml.window.document.querySelectorAll("div > b > small");
+            let nameAll = regionHtml.window.document.querySelectorAll("div > b > span");
             let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
             let winner = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
