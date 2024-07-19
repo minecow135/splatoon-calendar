@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path')
 const { JSDOM } = require('jsdom');
 const { nanoid } = require('nanoid');
+const Jimp = require("jimp");
 
 const sqlConnect = require('../common/sql.js');
 
@@ -60,10 +61,15 @@ async function getInfo() {
             return { region, teamsStr, img, name, startDate, endDate, winner };
         });
 
-        let ext = path.extname(img);
         let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
-        imgName = "splatfest-" + splatfestName + ext;
-        downloadImage(img, __dirname + "../../../web/img/src/" + splatfestName + "/", imgName);
+        imgName = "splatfest-" + splatfestName;
+
+        Jimp.read("https:" + img, function (err, image) {
+            if (err) throw err;
+
+            image.write("web/img/src/" + splatfestName + "/" + imgName + ".jpg");
+        });
+
 
         let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
 
