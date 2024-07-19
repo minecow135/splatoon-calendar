@@ -27,18 +27,15 @@ async function pullData() {
         // handle success
         let html = (new JSDOM(response.data));
         let dateAll = html.window.document.querySelectorAll(".splatfestTimer");
-        let placeAll = html.window.document.querySelectorAll(".splatfest div > div > div.bubbleboxbg-lighter");
-        let teamsAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > span > a");
         let teamsLinkAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > span > a");
-        let imgAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > div img");
 
-        return { dateAll, teamsAll, teamsLinkAll, imgAll, placeAll };
+        return { dateAll, teamsLinkAll };
     });
     return webValue;
 };
 
 async function getInfo() {
-    let { dateAll, teamsAll, teamsLinkAll, imgAll, placeAll } = await pullData();
+    let { dateAll, teamsLinkAll } = await pullData();
 
     let announced = false;
     if (dateAll.length != 0) {
@@ -48,31 +45,36 @@ async function getInfo() {
     let descData = [];
     let count = 0;
 
-    for (let team of teamsAll) {
-        let { name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
+    for (let team of teamsLinkAll) {
+        let { region, teamsStr, img, name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
             let regionHtml = (new JSDOM(regionResponse.data));
+            let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+            let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+            let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
             let nameAll = regionHtml.window.document.querySelectorAll("div > b > span");
             let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
             let winner = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
+            let region = regionAll[3].textContent.trim();
+            let teamsStr = teamsAll[1].textContent.trim();
+            let img = imgAll[0].getAttribute("src");
             let name = nameAll[0].textContent;
             let startDate = startEndDate[0].textContent;
             let endDate = startEndDate[1].textContent;
 
-            return { name, startDate, endDate, winner };
+            return { region, teamsStr, img, name, startDate, endDate, winner };
         });
 
-        let imgUrl = imgAll[count].getAttribute("src");
-        let ext = path.extname(imgUrl);
+        let ext = path.extname(img);
         let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
         imgName = "splatfest-" + splatfestName + ext;
-        downloadImage(imgUrl, __dirname + "../../../web/img/src/" + splatfestName + "/", imgName);
+        downloadImage(img, __dirname + "../../../web/img/src/" + splatfestName + "/", imgName);
 
-        let teams = team.textContent.split("vs.").map(s => s.trim());
+        let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
 
         descData.push([
             name,
-            placeAll[count].textContent,
+            region,
             "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
             teams,
             "https://splatcal.awdawd.eu/img/src/" + splatfestName + "/" + imgName,
