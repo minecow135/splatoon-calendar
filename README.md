@@ -15,16 +15,6 @@
 
 ## How to use
 
-### update
-
-to update run the following commands
-
-```bash
-git fetch
-git checkout v1.0.3
-npm install
-```
-
 ### Requirements
 
 - Node
@@ -39,6 +29,16 @@ npm install
 4. Import the database in the sql folder
 5. Use the Docker compose file to create the needed docker containers. be sure to edit the environment variables
 6. Start the containers
+
+### update
+
+to update run the following commands
+
+```bash
+git fetch
+git checkout v1.0.3
+npm install
+```
 
 ## file contents
 
