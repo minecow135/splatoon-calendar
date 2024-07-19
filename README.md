@@ -25,33 +25,13 @@ git checkout v1.0.3
 npm install
 ```
 
-### Host directly
-
-#### Requirements directly hosted
-
-- Node
-- Mariadb
-- Web server
-
-#### Setup directly hosted
-
-1. Clone the newest release with `git clone -b v1.0.3 https://github.com/minecow135/splatoon-calendar.git`
-2. Run npm install
-3. Import the database in the sql folder
-4. Create a .env file
-5. run `sudo chown www-data splatoon-calendar/ -R`
-6. Point the web server to the web folder
-7. Start node
-
-### Docker
-
-#### Requirements docker
+### Requirements
 
 - Node
 - Docker
 - Docker-compose
 
-#### Setup docker
+### Setup docker
 
 1. Clone the newest release with `git clone -b v1.0.3 https://github.com/minecow135/splatoon-calendar.git`
 2. Run npm install
