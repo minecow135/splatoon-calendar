@@ -79,6 +79,7 @@ async function getInfo() {
             startDate,
             endDate,
             winner,
+            dateAll[count],
         ]);
         count ++;
     };
@@ -108,44 +109,46 @@ async function getData() {
                     console.log("Splatfest Inserted");
                     let locationNum = 1;
                     for (const desc of descData) {
-                        let descCount = 1;
-                        var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
+                        if (desc[8]) {
+                            let descCount = 1;
+                            var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
 
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 1, desc[0] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("Name inserted");
-                        });
-                        descCount ++;
-
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 2, desc[1] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("location inserted");
-                        });
-                        descCount ++;
-
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 3, desc[2] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("link inserted");
-                        });
-                        descCount ++;
-
-                        teamNum = 1;
-                        for (const team of desc[3]) {
-                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 4, team ], function (error, insertResult) {
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 1, desc[0] ], function (error, insertResult) {
                                 if (error) throw error;
-                                console.log("Team inserted");
+                                console.log("Name inserted");
                             });
-                            teamNum ++;
                             descCount ++;
-                        }
 
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 5, desc[4] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("image link inserted");
-                        });
-                        descCount ++;
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 2, desc[1] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("location inserted");
+                            });
+                            descCount ++;
 
-                        locationNum ++;
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 3, desc[2] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("link inserted");
+                            });
+                            descCount ++;
+
+                            teamNum = 1;
+                            for (const team of desc[3]) {
+                                sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 4, team ], function (error, insertResult) {
+                                    if (error) throw error;
+                                    console.log("Team inserted");
+                                });
+                                teamNum ++;
+                                descCount ++;
+                            }
+
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 5, desc[4] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("image link inserted");
+                            });
+                            descCount ++;
+
+                            locationNum ++;
+                        };
                     };
                     sqlconnection.end();
                 });
