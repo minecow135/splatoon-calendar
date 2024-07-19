@@ -23,12 +23,12 @@ function until(conditionFunction) {
 }
 
 function createMsg(data, discord) {
-    let msg = "**" + data.title + "**";
+    let msg = "# " + data.title;
     msg += "\n<t:" + Math.floor(new Date(data.start).getTime() / 1000) + ":f> - <t:" + Math.floor(new Date(data.end).getTime() / 1000) + ":f>";
     let img = [];
     for (const dataRegion of data.description) {
-        msg += "\n\n" + dataRegion.locationData + ":";
-        msg += "\n    " + dataRegion.nameData;
+        msg += "\n\n## " + dataRegion.locationData + ":";
+        msg += "\n    **" + dataRegion.nameData + "**";
         count = 0;
         for (const team of dataRegion.teams) {
             if (count === 0) {
@@ -53,7 +53,7 @@ function createMsg(data, discord) {
     };
 
     if (img) {
-        msg += "\n";
+        msg += "\n-# ";
         for (const image of img) {
             msg += "[image](" + image + ") ";
         };
@@ -90,6 +90,8 @@ async function discordSend() {
             var sqlGetCalDescData = 'SELECT descName.calId, descName.locationNum, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData, descImg.id AS imgId, descImg.data AS imgData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 AND descName.locationNum = descLocation.locationNum LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 AND descLink.locationNum = descLocation.locationNum LEFT JOIN descData AS descImg ON descImg.calId = descName.calId AND descImg.dataTypeId = 5 AND descImg.locationNum = descLocation.locationNum WHERE descName.dataTypeId = 1 ORDER BY descName.locationNum';
             sqlconnection.query(sqlGetCalDescData, function (error, desc) {
                 if (error) throw error;
+                console.log("AAAAAAAAAAAAAAA")
+                console.log(desc)
                 if (desc && desc.length > 0) {
                     var sqlGetCalDescTeams = 'SELECT id, calId, locationNum, dataCalId, data FROM descData WHERE dataTypeId = 4;';
                     sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
