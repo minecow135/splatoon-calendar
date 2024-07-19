@@ -102,7 +102,7 @@ async function insertOneSplatfest({ item, descData }) {
                 console.log("Splatfest Inserted");
                 let locationNum = 1;
                 for (const desc of descData) {
-                    if (desc[8] && desc[8] === item[8]) {
+                    if (!desc[7] && desc[5] === item[5]) {
                         let descCount = 1;
                         var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
 
