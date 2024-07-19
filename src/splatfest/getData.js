@@ -27,18 +27,15 @@ async function pullData() {
         // handle success
         let html = (new JSDOM(response.data));
         let dateAll = html.window.document.querySelectorAll(".splatfestTimer");
-        let placeAll = html.window.document.querySelectorAll(".splatfest div > div > div.bubbleboxbg-lighter");
-        let teamsAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > span > a");
         let teamsLinkAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > span > a");
-        let imgAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > div img");
 
-        return { dateAll, teamsAll, teamsLinkAll, imgAll, placeAll };
+        return { dateAll, teamsLinkAll };
     });
     return webValue;
 };
 
 async function getInfo() {
-    let { dateAll, teamsAll, teamsLinkAll, imgAll, placeAll } = await pullData();
+    let { dateAll, teamsLinkAll } = await pullData();
 
     let announced = false;
     if (dateAll.length != 0) {
@@ -48,37 +45,43 @@ async function getInfo() {
     let descData = [];
     let count = 0;
 
-    for (let team of teamsAll) {
-        let { name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
+    for (let team of teamsLinkAll) {
+        let { region, teamsStr, img, name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
             let regionHtml = (new JSDOM(regionResponse.data));
-            let nameAll = regionHtml.window.document.querySelectorAll("div > b > small");
+            let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+            let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+            let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
+            let nameAll = regionHtml.window.document.querySelectorAll("div > b > span");
             let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
             let winner = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
+            let region = regionAll[3].textContent.trim();
+            let teamsStr = teamsAll[1].textContent.trim();
+            let img = imgAll[0].getAttribute("src");
             let name = nameAll[0].textContent;
             let startDate = startEndDate[0].textContent;
             let endDate = startEndDate[1].textContent;
 
-            return { name, startDate, endDate, winner };
+            return { region, teamsStr, img, name, startDate, endDate, winner };
         });
 
-        let imgUrl = imgAll[count].getAttribute("src");
-        let ext = path.extname(imgUrl);
+        let ext = path.extname(img);
         let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
         imgName = "splatfest-" + splatfestName + ext;
-        downloadImage(imgUrl, __dirname + "../../../web/img/src/" + splatfestName + "/", imgName);
+        downloadImage(img, __dirname + "../../../web/img/src/" + splatfestName + "/", imgName);
 
-        let teams = team.textContent.split("vs.").map(s => s.trim());
+        let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
 
         descData.push([
             name,
-            placeAll[count].textContent,
+            region,
             "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
             teams,
             "https://splatcal.awdawd.eu/img/src/" + splatfestName + "/" + imgName,
             startDate,
             endDate,
             winner,
+            dateAll[count],
         ]);
         count ++;
     };
@@ -93,61 +96,63 @@ async function getData() {
     if (err.announced) {
         let event = 1;
         let title = "Splatfest";
-        let startDate = new Date(descData[0][5]);
-        let endDate = new Date(descData[0][6]);
+        let startDateFirst = new Date(descData[0][5]);
+        let endDateFirst = new Date(descData[0][6]);
         let created = new Date(Date.now());
         let uid = nanoid() + "@splatfest.awdawd.eu";
 
         var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatCal` WHERE `startDate` = ?';
-        sqlconnection.query(sqlGetDate, [ startDate ], function (error, GetCount) {
+        sqlconnection.query(sqlGetDate, [ startDateFirst ], function (error, GetCount) {
             if (error) throw error;
             if (GetCount[0].count === 0) {
                 var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?)';
-                sqlconnection.query(sqlInsert, [ event, title, startDate, endDate, created, uid ], function (error, insertResult) {
+                sqlconnection.query(sqlInsert, [ event, title, startDateFirst, endDateFirst, created, uid ], function (error, insertResult) {
                     if (error) throw error;
                     console.log("Splatfest Inserted");
                     let locationNum = 1;
                     for (const desc of descData) {
-                        let descCount = 1;
-                        var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
+                        if (desc[8]) {
+                            let descCount = 1;
+                            var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
 
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 1, desc[0] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("Name inserted");
-                        });
-                        descCount ++;
-
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 2, desc[1] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("location inserted");
-                        });
-                        descCount ++;
-
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 3, desc[2] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("link inserted");
-                        });
-                        descCount ++;
-
-                        teamNum = 1;
-                        for (const team of desc[3]) {
-                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 4, team ], function (error, insertResult) {
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 1, desc[0] ], function (error, insertResult) {
                                 if (error) throw error;
-                                console.log("Team inserted");
+                                console.log("Name inserted");
                             });
-                            teamNum ++;
                             descCount ++;
-                        }
 
-                        sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 5, desc[4] ], function (error, insertResult) {
-                            if (error) throw error;
-                            console.log("image link inserted");
-                        });
-                        descCount ++;
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 2, desc[1] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("location inserted");
+                            });
+                            descCount ++;
 
-                        locationNum ++;
-                        sqlconnection.end();
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 3, desc[2] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("link inserted");
+                            });
+                            descCount ++;
+
+                            teamNum = 1;
+                            for (const team of desc[3]) {
+                                sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 4, team ], function (error, insertResult) {
+                                    if (error) throw error;
+                                    console.log("Team inserted");
+                                });
+                                teamNum ++;
+                                descCount ++;
+                            }
+
+                            sqlconnection.query(sqlInsertDesc, [ insertResult.insertId, locationNum, descCount, 5, desc[4] ], function (error, insertResult) {
+                                if (error) throw error;
+                                console.log("image link inserted");
+                            });
+                            descCount ++;
+
+                            locationNum ++;
+                        };
                     };
+                    sqlconnection.end();
                 });
             } else {
                 console.log("already inserted with id " + GetCount[0].id);
