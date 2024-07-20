@@ -23,12 +23,12 @@ function until(conditionFunction) {
 }
 
 function createMsg(data, discord) {
-    let msg = "**" + data.title + "**";
+    let msg = "# " + data.title;
     msg += "\n<t:" + Math.floor(new Date(data.start).getTime() / 1000) + ":f> - <t:" + Math.floor(new Date(data.end).getTime() / 1000) + ":f>";
     let img = [];
     for (const dataRegion of data.description) {
-        msg += "\n\n" + dataRegion.locationData + ":";
-        msg += "\n    " + dataRegion.nameData;
+        msg += "\n\n## " + dataRegion.locationData + ":";
+        msg += "\n    **" + dataRegion.nameData + "**";
         count = 0;
         for (const team of dataRegion.teams) {
             if (count === 0) {
@@ -53,7 +53,7 @@ function createMsg(data, discord) {
     };
 
     if (img) {
-        msg += "\n";
+        msg += "\n-# ";
         for (const image of img) {
             msg += "[image](" + image + ") ";
         };

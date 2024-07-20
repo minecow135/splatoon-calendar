@@ -23,7 +23,7 @@
 
 ### Setup docker
 
-1. Clone the newest release with `git clone -b v1.1.0 https://github.com/minecow135/splatoon-calendar.git`
+1. Clone the newest release with `git clone -b v1.2.0 https://github.com/minecow135/splatoon-calendar.git`
 2. Run npm install
 3. run `sudo chown www-data splatoon-calendar/ -R`
 4. Import the database in the sql folder
@@ -36,7 +36,7 @@ to update run the following commands
 
 ```bash
 git fetch
-git checkout v1.1.0
+git checkout v1.2.0
 npm install
 ```
 
@@ -95,7 +95,7 @@ services:
       # copy with suffix to get more channels
       #splatfestWin2=CHANNEL ID,PING ID,PING ID
     volumes:
-      - /var/www/splatoon-calendar:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN NODE - /web
+      - /var/www/splatoon-calendar:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN WEB CONTAINER - /web
     expose:
       - "8001"
     ports:
@@ -108,5 +108,5 @@ services:
     ports:
       - "8104:80" # first number is port on the server. change this if needed
     volumes:
-      - /var/www/splatoon-calendar/web:/var/www/html # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN NODE + /web
+      - /var/www/splatoon-calendar/web:/var/www/html # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN NODE CONTAINER + /web
 ```
