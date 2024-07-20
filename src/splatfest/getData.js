@@ -78,7 +78,7 @@ async function getInfo() {
             region,
             "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
             teams,
-            "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName,
+            "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
             startDate,
             endDate,
             winner,
