@@ -17,7 +17,6 @@ async function splatfest() {
     if (!run || !runFirst) {
         console.error("run not defined")
     } else {
-        console.log('0 45 ' + runFirst + ' * * *')
         cron.schedule('0 45 ' + runFirst + ' * * *', () => {
             getData();
         });
