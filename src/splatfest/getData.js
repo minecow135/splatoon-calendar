@@ -25,7 +25,7 @@ async function getTeamData(teamsLinkAll, count) {
         let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
-        let nameAll = regionHtml.window.document.querySelectorAll("div > b > smalld");
+        let nameAll = regionHtml.window.document.querySelectorAll("div > b > small");
         let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
         let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
