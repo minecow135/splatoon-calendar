@@ -6,6 +6,7 @@ const { nanoid } = require('nanoid');
 const Jimp = require("jimp");
 
 const sqlConnect = require('../common/sql.js');
+const errorSend = require('../common/errorSend.js');
 
 async function pullData() {
     webValue = await axios.get("https://splatoonwiki.org/w/index.php?title=Main_Page/Splatfest").then(function (response) {
@@ -18,6 +19,35 @@ async function pullData() {
     return webValue;
 };
 
+async function getTeamData(teamsLinkAll, count) {
+    return await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
+        let regionHtml = (new JSDOM(regionResponse.data));
+        let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+        let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
+        let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
+        let nameAll = regionHtml.window.document.querySelectorAll("div > b > smalld");
+        let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
+        let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
+
+        try {
+            let region = regionAll[3].textContent.trim();
+            let teamsStr = teamsAll[1].textContent.trim();
+            let img = imgAll[0].getAttribute("src");
+            let name = nameAll[0].textContent;
+            let startDate = startEndDate[0].textContent;
+            let endDate = startEndDate[1].textContent;
+            let winner = winnerAll[0]?.textContent.trim();
+
+            return { region, teamsStr, img, name, startDate, endDate, winner };
+        } catch (error) {
+            console.log(error)
+            let category = "Splatfest"
+            let part = "Get data"
+            errorSend({ category, part, error })
+        };
+    });
+};
+
 async function getInfo() {
     let { teamsLinkAll } = await pullData();
 
@@ -25,49 +55,34 @@ async function getInfo() {
     let count = 0;
 
     for (let team of teamsLinkAll) {
-        let { region, teamsStr, img, name, startDate, endDate, winner } = await axios.get("https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href')).then(function (regionResponse) {
-            let regionHtml = (new JSDOM(regionResponse.data));
-            let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
-            let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
-            let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
-            let nameAll = regionHtml.window.document.querySelectorAll("#firstHeading");
-            let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
-            let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
+        let teamdata = await getTeamData(teamsLinkAll, count)
 
-            let region = regionAll[3].textContent.trim();
-            let teamsStr = teamsAll[1].textContent.trim();
-            let img = imgAll[0].getAttribute("src");
-            let name = nameAll[0].textContent;
-            let startDate = startEndDate[0].textContent;
-            let endDate = startEndDate[1].textContent;
-            let winner = winnerAll[0]?.textContent.trim()
+        if (teamdata) {
+            let { region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
-            return { region, teamsStr, img, name, startDate, endDate, winner };
-        });
+            let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
+            imgName = "splatfest-" + splatfestName;
 
-        let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
-        imgName = "splatfest-" + splatfestName;
+            Jimp.read("https:" + img, function (err, image) {
+                if (err) throw err;
 
-        Jimp.read("https:" + img, function (err, image) {
-            if (err) throw err;
+                image.write("web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
+            });
 
-            image.write("web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
-        });
+            let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
 
-
-        let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
-
-        descData.push([
-            name,
-            region,
-            "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
-            teams,
-            "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
-            startDate,
-            endDate,
-            winner,
-        ]);
-        count ++;
+            descData.push([
+                name,
+                region,
+                "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
+                teams,
+                "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
+                startDate,
+                endDate,
+                winner,
+            ]);
+            count ++;
+        };
     };
     return { descData };
 };
@@ -160,17 +175,21 @@ async function insertWinner({ item }) {
 }
 
 async function getData() {
-    let { descData } = await getInfo();
+    let data = await getInfo();
 
-    for (let index = 0; index < descData.length; index++) {
-        const item = descData[index];
-
-        if (!item[7]) {
-            insertOneSplatfest({ item, descData });
-        } else if (item[7]) {
-            insertWinner({ item });
-        } else {
-            console.log("no splatfest or winner announced");
+    if (data) {  
+        let descData = data.descData
+        
+        for (let index = 0; index < descData.length; index++) {
+            const item = descData[index];
+            
+            if (!item[7]) {
+                insertOneSplatfest({ item, descData });
+            } else if (item[7]) {
+                insertWinner({ item });
+            } else {
+                console.log("no splatfest or winner announced");
+            };
         };
     };
 };
