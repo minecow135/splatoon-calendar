@@ -23,7 +23,7 @@
 
 ### Setup docker
 
-1. Clone the newest release with `git clone -b v1.3.0 https://github.com/minecow135/splatoon-calendar.git`
+1. Clone the newest release with `git clone -b v1.4.0 https://github.com/minecow135/splatoon-calendar.git`
 2. Run npm install
 3. run `sudo chown www-data splatoon-calendar/ -R`
 4. Import the database in the sql folder
@@ -36,7 +36,7 @@ to update run the following commands
 
 ```bash
 git fetch
-git checkout v1.3.0
+git checkout v1.4.0
 npm install
 ```
 
@@ -54,6 +54,10 @@ DB_NAME=DATABASE
 # Discord bot connection
 botToken=TOKEN
 
+# When to run splatfest fetch (Hour)
+SPLATFEST_RUN_HOUR=06
+# Default 06
+
 # message channels
 # use as many ping ids as you want. separate with commas to get more
 splatfestNew=CHANNEL ID,PING ID,PING ID
@@ -63,6 +67,10 @@ splatfestNew=CHANNEL ID,PING ID,PING ID
 splatfestWin=CHANNEL ID,PING ID,PING ID
 # copy with suffix to get more channels
 #splatfestWin2=CHANNEL ID,PING ID,PING ID
+
+error=CHANNEL ID,PING ID,PING ID      
+# copy with suffix to get more channels
+#error2=CHANNEL ID,PING ID,PING ID
 ```
 
 ### docker compose
