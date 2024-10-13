@@ -7,22 +7,6 @@ const Jimp = require("jimp");
 
 const sqlConnect = require('../common/sql.js');
 
-async function downloadImage(url, filepath, imgName) {
-    const response = await axios({
-        url,
-        method: 'GET',
-        responseType: 'stream'
-    });
-    return new Promise((resolve, reject) => {
-        if (!fs.existsSync(filepath)){
-            fs.mkdirSync(filepath, { recursive: true });
-        }
-        response.data.pipe(fs.createWriteStream(filepath + imgName))
-            .on('error', reject)
-            .once('close', () => resolve(filepath));
-    });
-};
-
 async function pullData() {
     webValue = await axios.get("https://splatoonwiki.org/w/index.php?title=Main_Page/Splatfest").then(function (response) {
         // handle success
