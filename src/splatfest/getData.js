@@ -87,7 +87,7 @@ async function getInfo() {
     return { descData };
 };
 
-async function insertOneSplatfest({ item, descData }) {
+async function insertOneSplatfest({ item, descData, ignoreWin }) {
     let sqlconnection = await sqlConnect();
 
     let event = 1;
@@ -107,7 +107,7 @@ async function insertOneSplatfest({ item, descData }) {
                 console.log("Splatfest Inserted");
                 let locationNum = 1;
                 for (const desc of descData) {
-                    if (!desc[7] && desc[5] === item[5]) {
+                    if ((!desc[7] || ignoreWin.includes(item[7])) && desc[5] === item[5]) {
                         let descCount = 1;
                         var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
 
@@ -184,14 +184,18 @@ async function insertWinner({ item }) {
 async function getData() {
     let data = await getInfo();
 
+    ignoreWin = [
+        "TBD",
+    ]
+
     if (data) {  
         let descData = data.descData
         
         for (let index = 0; index < descData.length; index++) {
             const item = descData[index];
-            
-            if (!item[7]) {
-                insertOneSplatfest({ item, descData });
+
+            if (!item[7] || ignoreWin.includes(item[7])) {
+                insertOneSplatfest({ item, descData, ignoreWin });
             } else if (item[7]) {
                 insertWinner({ item });
             } else {
