@@ -164,7 +164,12 @@ async function insertWinner({ item }) {
     sqlconnection.query(getWinTeam, [item[7], item[0], eventType], function (error, events) {
         if (error) throw error;
         if (!events[0]) {
-            console.log("winner for " + item[0] + " not found in teams (" + item[7] + ")");
+            let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
+            console.log(error);
+            
+            let category = "Splatfest";
+            let part = "Insert winner";
+            errorSend({ category, part, error });
         } else {
             var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
             sqlconnection.query(sqlGetCalData, [events[0].calId, events[0].winId], function (error, events) {
