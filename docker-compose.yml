@@ -4,26 +4,7 @@ services:
     image: "node:20"
     user: "www-data"
     working_dir: /home/node/app
-    environment:
-      - NODE_ENV=production
-      # Database connection
-      - DB_HOST=HOST
-      - DB_USER=USER
-      - DB_PASSWORD=PASSWORD
-      - DB_NAME=DATABASE
-
-      # Discord bot connection
-      - botToken=TOKEN
-
-      # message channels
-      # use as many ping ids as you want. separate with commas to get more
-      - splatfestNew=CHANNEL ID,PING ID,PING ID
-      # copy with suffix to get more channels
-      #splatfestNew2=CHANNEL ID,PING ID,PING ID
-
-      - splatfestWin=CHANNEL ID,PING ID,PING ID
-      # copy with suffix to get more channels
-      #splatfestWin2=CHANNEL ID,PING ID,PING ID
+    env_file: .env
     volumes:
       - /var/www/splatoon-calendar:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN NODE - /web
     expose:
