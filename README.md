@@ -23,7 +23,7 @@
 
 ### Setup docker
 
-1. Clone the newest release with `git clone -b v1.4.1 https://github.com/minecow135/splatoon-calendar.git`
+1. Clone the newest release with `git clone -b v1.5.0 https://github.com/minecow135/splatoon-calendar.git`
 2. Run npm install
 3. run `sudo chown www-data splatoon-calendar/ -R`
 4. Import the database in the sql folder
@@ -36,7 +36,7 @@ to update run the following commands
 
 ```bash
 git fetch
-git checkout v1.4.1
+git checkout v1.5.0
 npm install
 ```
 
