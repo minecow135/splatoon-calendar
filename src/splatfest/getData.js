@@ -1,6 +1,4 @@
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path')
 const { JSDOM } = require('jsdom');
 const { nanoid } = require('nanoid');
 const Jimp = require("jimp");
