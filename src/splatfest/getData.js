@@ -184,6 +184,11 @@ async function getData() {
 
     ignoreWin = [
         "TBD",
+        "tbd",
+        "Tbd",
+        "TBA",
+        "tba",
+        "Tba",
     ]
 
     if (data) {  
