@@ -41,10 +41,10 @@ async function getTeamData(teamsLinkAll, count) {
                 return { region, teamsStr, img, name, startDate, endDate, winner };
             } else {
                 name = nameBak 
-            return { region, teamsStr, img, name, startDate, endDate, winner };
+                return { region, teamsStr, img, name, startDate, endDate, winner };
             }
         } catch (error) {
-            console.log(error)
+            console.error(error)
             let category = "Splatfest"
             let part = "Get data"
             errorSend({ category, part, error })
@@ -103,12 +103,22 @@ async function insertOneSplatfest({ item, descData, ignoreWin }) {
 
     var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatCal` WHERE `startDate` = ?';
     sqlconnection.query(sqlGetDate, [startDateFirst], function (error, GetCount) {
-        if (error) throw error;
+        if (error) {
+            console.error(error);
+            let category = "Splatfest";
+            let part = "Splatfest Insert 1";
+            errorSend({ category, part, error });
+        }
         if (GetCount[0].count === 0) {
             var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?)';
             sqlconnection.query(sqlInsert, [event, title, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
-                if (error) throw error;
                 console.log("Splatfest Inserted");
+                if (error) {
+                    console.error(error);
+                    let category = "Splatfest";
+                    let part = "Splatfest Insert 2";
+                    errorSend({ category, part, error });
+                }
                 let locationNum = 1;
                 for (const desc of descData) {
                     if ((!desc[7] || ignoreWin.includes(item[7])) && desc[5] === item[5]) {
@@ -116,19 +126,34 @@ async function insertOneSplatfest({ item, descData, ignoreWin }) {
                         var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `locationNum`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?, ?)';
 
                         sqlconnection.query(sqlInsertDesc, [insertResult.insertId, locationNum, descCount, 1, desc[0]], function (error, insertResult) {
-                            if (error) throw error;
+                            if (error) {
+                                console.error(error);
+                                let category = "Splatfest";
+                                let part = "Name insert";
+                                errorSend({ category, part, error });
+                            }
                             console.log("Name inserted");
                         });
                         descCount++;
 
                         sqlconnection.query(sqlInsertDesc, [insertResult.insertId, locationNum, descCount, 2, desc[1]], function (error, insertResult) {
-                            if (error) throw error;
+                            if (error) {
+                                console.error(error);
+                                let category = "Splatfest";
+                                let part = "location insert";
+                                errorSend({ category, part, error });
+                            }
                             console.log("location inserted");
                         });
                         descCount++;
 
                         sqlconnection.query(sqlInsertDesc, [insertResult.insertId, locationNum, descCount, 3, desc[2]], function (error, insertResult) {
-                            if (error) throw error;
+                            if (error) {
+                                console.error(error);
+                                let category = "Splatfest";
+                                let part = "link insert";
+                                errorSend({ category, part, error });
+                            }
                             console.log("link inserted");
                         });
                         descCount++;
@@ -136,7 +161,12 @@ async function insertOneSplatfest({ item, descData, ignoreWin }) {
                         teamNum = 1;
                         for (const team of desc[3]) {
                             sqlconnection.query(sqlInsertDesc, [insertResult.insertId, locationNum, descCount, 4, team], function (error, insertResult) {
-                                if (error) throw error;
+                                if (error) {
+                                    console.error(error);
+                                    let category = "Splatfest";
+                                    let part = "Team insert";
+                                    errorSend({ category, part, error });
+                                }
                                 console.log("Team inserted");
                                 });
                             teamNum++;
@@ -144,7 +174,12 @@ async function insertOneSplatfest({ item, descData, ignoreWin }) {
                         }
 
                         sqlconnection.query(sqlInsertDesc, [insertResult.insertId, locationNum, descCount, 5, desc[4]], function (error, insertResult) {
-                            if (error) throw error;
+                            if (error) {
+                                console.error(error);
+                                let category = "Splatfest";
+                                let part = "image link insert";
+                                errorSend({ category, part, error });
+                            }
                             console.log("image link inserted");
                         });
                         descCount++;
@@ -166,18 +201,27 @@ async function insertWinner({ item }) {
     let eventType = "splatfest";
     var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data` FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`event` = ? AND `win`.`id` IS NULL';
     sqlconnection.query(getWinTeam, [item[7], item[0], eventType], function (error, events) {
-        if (error) throw error;
+        if (error) {
+            console.error(error);
+            let category = "Splatfest";
+            let part = "Insert winner 1";
+            errorSend({ category, part, error });
+        }
         if (!events[0]) {
             let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
-            console.log(error);
-            
+            console.error(error);
             let category = "Splatfest";
-            let part = "Insert winner";
+            let part = "Insert winner 2";
             errorSend({ category, part, error });
         } else {
             var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
             sqlconnection.query(sqlGetCalData, [events[0].calId, events[0].winId], function (error, events) {
-                if (error) throw error;
+                if (error) {
+                    console.error(error);
+                    let category = "Splatfest";
+                    let part = "Insert winner 3";
+                    errorSend({ category, part, error });
+                }
                 console.log("winner saved for " + item[0] + ": " + item[7]);
                 sqlconnection.end();
             });
@@ -186,32 +230,39 @@ async function insertWinner({ item }) {
 }
 
 async function getData() {
-    let data = await getInfo();
+    try {
+        let data = await getInfo();
 
-    ignoreWin = [
-        "TBD",
-        "tbd",
-        "Tbd",
-        "TBA",
-        "tba",
-        "Tba",
-    ]
+        ignoreWin = [
+            "TBD",
+            "tbd",
+            "Tbd",
+            "TBA",
+            "tba",
+            "Tba",
+        ]
 
-    if (data) {  
-        let descData = data.descData
-        
-        for (let index = 0; index < descData.length; index++) {
-            const item = descData[index];
+        if (data) {  
+            let descData = data.descData
+            
+            for (let index = 0; index < descData.length; index++) {
+                const item = descData[index];
 
-            if (!item[7] || ignoreWin.includes(item[7])) {
-                insertOneSplatfest({ item, descData, ignoreWin });
-            } else if (item[7]) {
-                insertWinner({ item });
-            } else {
-                console.log("no splatfest or winner announced");
+                if (!item[7] || ignoreWin.includes(item[7])) {
+                    insertOneSplatfest({ item, descData, ignoreWin });
+                } else if (item[7]) {
+                    insertWinner({ item });
+                } else {
+                    console.log("no splatfest or winner announced");
+                };
             };
         };
-    };
+    } catch (error) {
+        console.error(error);
+        let category = "Splatfest";
+        let part = "Other";
+        errorSend({ category, part, error });
+    }
 };
 
 module.exports = getData;
