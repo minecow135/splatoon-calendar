@@ -24,6 +24,7 @@ async function getTeamData(teamsLinkAll, count) {
         let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
         let nameAll = regionHtml.window.document.querySelectorAll("div > b > small");
+        let nameAllBak = regionHtml.window.document.querySelectorAll("div > b");
         let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
         let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
@@ -31,12 +32,17 @@ async function getTeamData(teamsLinkAll, count) {
             let region = regionAll[3].textContent.trim();
             let teamsStr = teamsAll[1].textContent.trim();
             let img = imgAll[0].getAttribute("src");
-            let name = nameAll[0].textContent;
+            let name = nameAll[0]?.textContent;
+            let nameBak = nameAllBak[0]?.textContent;
             let startDate = startEndDate[0].textContent;
             let endDate = startEndDate[1].textContent;
             let winner = winnerAll[0]?.textContent.trim();
-
+            if (name) {
+                return { region, teamsStr, img, name, startDate, endDate, winner };
+            } else {
+                name = nameBak 
             return { region, teamsStr, img, name, startDate, endDate, winner };
+            }
         } catch (error) {
             console.log(error)
             let category = "Splatfest"
