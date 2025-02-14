@@ -199,7 +199,7 @@ async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
     let eventType = "splatfest";
-    var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data` FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`event` = ? AND `win`.`id` IS NULL';
+    var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data`, `win`.`id` AS winnerId FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`event` = ?';
     sqlconnection.query(getWinTeam, [item[7], item[0], eventType], function (error, events) {
         if (error) {
             console.error(error);
@@ -207,25 +207,29 @@ async function insertWinner({ item }) {
             let part = "Insert winner 1";
             errorSend({ category, part, error });
         }
-        if (!events[0]) {
-            let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
-            console.error(error);
-            let category = "Splatfest";
-            let part = "Insert winner 2";
-            errorSend({ category, part, error });
+        if (events[0].winnerId) {
+            console.log("winner already inserted (" + item[7] + ")");
         } else {
-            var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
-            sqlconnection.query(sqlGetCalData, [events[0].calId, events[0].winId], function (error, events) {
-                if (error) {
-                    console.error(error);
-                    let category = "Splatfest";
-                    let part = "Insert winner 3";
-                    errorSend({ category, part, error });
-                }
-                console.log("winner saved for " + item[0] + ": " + item[7]);
-                sqlconnection.end();
-            });
-        };
+            if (!events[0]) {
+                let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
+                console.error(error);
+                let category = "Splatfest";
+                let part = "Insert winner 2";
+                errorSend({ category, part, error });
+            } else {
+                var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
+                sqlconnection.query(sqlGetCalData, [events[0].calId, events[0].winId], function (error, events) {
+                    if (error) {
+                        console.error(error);
+                        let category = "Splatfest";
+                        let part = "Insert winner 3";
+                        errorSend({ category, part, error });
+                    }
+                    console.log("winner saved for " + item[0] + ": " + item[7]);
+                    sqlconnection.end();
+                });
+            };
+        }
     });
 }
 
