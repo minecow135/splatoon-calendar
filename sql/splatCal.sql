@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Apr 26, 2024 at 10:06 PM
+-- Generation Time: Mar 02, 2025 at 10:46 PM
 -- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
 -- PHP Version: 8.2.8
 
@@ -67,6 +67,7 @@ CREATE TABLE `descData` (
 CREATE TABLE `discordSent` (
   `id` int(11) NOT NULL,
   `channelId` decimal(25,0) NOT NULL,
+  `messageId` decimal(25,0) NOT NULL,
   `calId` int(11) NOT NULL,
   `messageType` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
