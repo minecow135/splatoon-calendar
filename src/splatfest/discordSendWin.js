@@ -63,7 +63,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
                 var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '2')";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
                     if (error) throw error;
-                    console.log("Win message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id);
+                    console.log("Win message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id, "db send id:", events.insertId);
                     sqlconnection.end();
                 });
             });
