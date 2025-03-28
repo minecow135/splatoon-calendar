@@ -6,7 +6,8 @@ services:
     working_dir: /home/node/app
     env_file: .env
     volumes:
-      - /var/www/splatoon-calendar:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN WEB CONTAINER - /web
+      - /var/www/splatoon-calendar/node:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN WEB CONTAINER - /web
+      - /var/www/splatoon-calendar/web:/home/node/app/web
     expose:
       - "8001"
     ports:
