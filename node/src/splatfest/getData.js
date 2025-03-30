@@ -70,7 +70,7 @@ async function getInfo() {
             Jimp.read("https:" + img, function (err, image) {
                 if (err) throw err;
 
-                image.write("web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
+                image.write("../web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
             });
 
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
