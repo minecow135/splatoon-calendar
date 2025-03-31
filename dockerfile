@@ -2,6 +2,8 @@ FROM alpine:3.21
 
 ARG UGNAME=splatcal
 
+ENV BASE_DIR_WEB=/usr/local/splatcal/web/
+
 RUN addgroup -g 1000 ${UGNAME}
 RUN adduser -u 1000 -G ${UGNAME} -s /bin/sh -D ${UGNAME}
 

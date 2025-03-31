@@ -70,7 +70,7 @@ async function getInfo() {
             Jimp.read("https:" + img, function (err, image) {
                 if (err) throw err;
 
-                image.write("../web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
+                image.write(BASE_DIR_WEB + "/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
             });
 
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
@@ -80,7 +80,7 @@ async function getInfo() {
                 region,
                 "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
                 teams,
-                "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
+                process.env.WEB_URL + "img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
                 startDate,
                 endDate,
                 winner,
