@@ -381,3 +381,4 @@ package-lock.json
 # spesific for this project
 *.ics
 web/img/src/
+database/
