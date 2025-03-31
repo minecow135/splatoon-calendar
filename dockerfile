@@ -15,6 +15,10 @@ RUN mkdir -p /usr/local/splatcal/lib
 RUN mkdir -p /usr/local/splatcal/app
 RUN mkdir -p /usr/local/splatcal/web
 
+COPY ./lib /usr/local/splatcal/lib/
+COPY ./node /usr/local/splatcal/app/
+COPY ./web /usr/local/splatcal/web/
+
 RUN chown -R ${UGNAME}:${UGNAME} /usr/local/splatcal
 
 RUN chown -R ${UGNAME}:${UGNAME} /var/log/apache2
@@ -22,10 +26,6 @@ RUN chown -R ${UGNAME}:${UGNAME} /usr/lib/apache2
 RUN chown -R ${UGNAME}:${UGNAME} /run/apache2
 
 USER ${UGNAME}
-
-COPY ./lib /usr/local/splatcal/lib/
-COPY ./node /usr/local/splatcal/app/
-COPY ./web /usr/local/splatcal/web/
 
 COPY ./lib/apache/httpd.conf /etc/apache2/
 
