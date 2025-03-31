@@ -54,7 +54,7 @@ async function createIcs() {
 
                     console.log("Calendar updated");
 
-                    writeFileSync(process.env.BASE_DIR_WEB + `/splatfest.ics`, value);
+                    writeFileSync(process.env.BASE_DIR_WEB + `splatfest.ics`, value);
 
                     sqlconnection.end();
                 });
