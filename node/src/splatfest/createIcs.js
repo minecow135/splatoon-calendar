@@ -6,7 +6,7 @@ const sqlConnect = require('../common/sql.js');
 async function createIcs() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`event` = ?';
+    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
         if (error) throw error;
         if (events){
