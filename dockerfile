@@ -11,13 +11,9 @@ RUN apk add apache2
 
 RUN apk add nodejs npm
 
-RUN mkdir -p /usr/local/splatcal/lib
-RUN mkdir -p /usr/local/splatcal/app
-RUN mkdir -p /usr/local/splatcal/web
+RUN mkdir -p /usr/local/splatcal/
 
-COPY ./lib /usr/local/splatcal/lib/
-COPY ./node /usr/local/splatcal/app/
-COPY ./web /usr/local/splatcal/web/
+COPY . /usr/local/splatcal/
 
 RUN chown -R ${UGNAME}:${UGNAME} /usr/local/splatcal
 
