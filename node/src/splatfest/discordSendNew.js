@@ -65,11 +65,11 @@ function createMsg(data, discord) {
 async function sendMsg(SplatCalData, id, discordChannel) {
     let sqlconnection = await sqlConnect();
     await until(_ => discordConnect.readyTimestamp);
-    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `data` = 1";
+    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `messageType` = 1";
     sqlconnection.query(sqlGetCalData, [ discordChannel, id ], async function (error, DiscordSent ) {
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
-                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `data`) VALUES (?, ?, ?, '1')";
+                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '1')";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
                     if (error) throw error;
                     console.log("Message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id, "db send id:", events.insertId);
