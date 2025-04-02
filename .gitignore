@@ -376,7 +376,6 @@ yarn-error.log*
 
 # Other
 markdown-cheat-sheet.md
-package-lock.json
 
 # spesific for this project
 *.ics

@@ -49,6 +49,8 @@ WEB_URL=https://example.com/
 
 # Discord bot connection
 botToken=TOKEN
+BOT_ACTIVITY_TYPE=Playing # Competing, Custom, Listening, Playing, Streaming, Watching
+BOT_ACTIVITY=Splatoon 3
 
 # When to run splatfest fetch (Hour)
 SPLATFEST_RUN_HOUR=06
