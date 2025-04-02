@@ -1,0 +1,17 @@
+# app files
+docker-compose.yml
+compose-dev.yaml
+.env
+.env*
+
+# Git
+.git
+.gitignore
+LICENSE
+**/*.md
+
+**/node_modules
+**/*.log
+
+**/*.ics
+web/img/src/

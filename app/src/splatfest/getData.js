@@ -70,7 +70,7 @@ async function getInfo() {
             Jimp.read("https:" + img, function (err, image) {
                 if (err) throw err;
 
-                image.write("web/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
+                image.write(process.env.BASE_DIR_WEB + "/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
             });
 
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
@@ -80,7 +80,7 @@ async function getInfo() {
                 region,
                 "https://splatoonwiki.org" + teamsLinkAll[count].getAttribute('href'),
                 teams,
-                "https://splatcal.awdawd.eu/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
+                process.env.WEB_URL + "img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
                 startDate,
                 endDate,
                 winner,
@@ -199,7 +199,7 @@ async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
     let eventType = "splatfest";
-    var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data`, `win`.`id` AS winnerId FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`event` = ?';
+    var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data`, `win`.`id` AS winnerId FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`data` = ?';
     sqlconnection.query(getWinTeam, [item[7], item[0], eventType], function (error, events) {
         if (error) {
             console.error(error);

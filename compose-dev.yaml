@@ -1,11 +1,23 @@
 services:
   splatcal:
-    image: git.awdawd.eu/awd/splatcal:v2.0.0-rc2
+    build:
+      context: .
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./node
+          target: /usr/local/splatcal/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./node/package.json
     depends_on:
       db:
         condition: service_healthy
     env_file:
       - .env
+    ports:
+      - 8035:8080
 
   db:
     image: mariadb:11
@@ -18,7 +30,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-
     env_file:
       - .env
     environment:
@@ -26,3 +37,14 @@ services:
       MARIADB_USER: ${DB_USER}
       MARIADB_PASSWORD: ${DB_PASSWORD} 
       MARIADB_DATABASE: ${DB_NAME}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      #- PMA_ARBITRARY=1
+      - PMA_HOST=db
+    ports:
+      - 8036:80

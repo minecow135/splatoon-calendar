@@ -29,7 +29,16 @@ function createMsg(data, discord) {
     for (const dataRegion of data.description) {
         msg += "\n\n## " + dataRegion.locationData + ":";
         msg += "\n    **" + dataRegion.nameData + "**";
-        msg += "\n    Winner: " + dataRegion.winner;
+        count = 0;
+        for (const team of dataRegion.teams) {
+            if (count === 0) {
+                msg += "\n    ";
+            } else {
+                msg += ",  ";
+            };
+            msg += team.data;
+            count ++;
+        };
         img.push(dataRegion.imgData);
     };
 
@@ -56,14 +65,14 @@ function createMsg(data, discord) {
 async function sendMsg(SplatCalData, id, discordChannel) {
     let sqlconnection = await sqlConnect();
     await until(_ => discordConnect.readyTimestamp);
-    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `messageType` = 2";
+    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `messageType` = 1";
     sqlconnection.query(sqlGetCalData, [ discordChannel, id ], async function (error, DiscordSent ) {
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
-                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '2')";
+                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '1')";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
                     if (error) throw error;
-                    console.log("Win message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id, "db send id:", events.insertId);
+                    console.log("Message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id, "db send id:", events.insertId);
                     sqlconnection.end();
                 });
             });
@@ -74,7 +83,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `win`.`descId`, `descData`.`data` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `descData` ON `win`.`descId` = `descData`.`id` WHERE `eventTypes`.`event` = ? AND `win`.`descId` IS NOT NULL';
+    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` =  ?';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) throw error;
         if (events && events.length > 0) {
@@ -100,20 +109,19 @@ async function discordSend() {
                                             };
                                         };
                                         descItem.teams = teamsArr;
-                                        descItem.winner = event.data;
                                         description.push(descItem);
                                     };
                                 };
 
                                 let id = event.id;
-                                let title = event.title + " winner";
+                                let title = event.title;
                                 let start = event.startDate;
                                 let end = event.endDate;
 
                                 eventArr.push({ id, title, description, start, end, });
                             };
                             for (const event of eventArr) {
-                                const env = getEnv("splatfestWin");
+                                const env = getEnv("splatfestNew");
                                 for (const item of env) {
                                     msg = createMsg(event, item);
                                     sendMsg(msg, event.id, item[0]);
