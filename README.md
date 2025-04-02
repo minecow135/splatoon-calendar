@@ -17,28 +17,19 @@
 
 ### Requirements
 
-- Node
 - Docker
 - Docker-compose
 
 ### Setup docker
 
-1. Clone the newest release with `git clone -b v1.7.1 https://github.com/minecow135/splatoon-calendar.git`
-2. Run npm install
-3. run `sudo chown www-data splatoon-calendar/ -R`
-4. Import the database in the sql folder
-5. Use the Docker compose file to create the needed docker containers. be sure to edit the environment variables
-6. Start the containers
+1. Copy the docker-compose.yml
+2. Copy the .env.sample to .env
+3. Update the values in the .env file
+   If you use the database in the docker compose, the only thing you need to update are the passwords
 
 ### update
 
-to update run the following commands
-
-```bash
-git fetch
-git checkout v1.7.1
-npm install
-```
+To update, remove the old docker-compose.yml, copy the new, and update the .env file if there are any new config variables
 
 ## file contents
 
@@ -46,10 +37,15 @@ npm install
 
 ```shell
 # Database connection
-DB_HOST=HOST
-DB_USER=USER
+DB_HOST=db
+DB_USER=splatcal
 DB_PASSWORD=PASSWORD
-DB_NAME=DATABASE
+DB_NAME=splatcal
+
+# Database root password. only used for you to access the database
+DB_ROOT_PASSWORD=PASSWORD
+
+WEB_URL=https://example.com/
 
 # Discord bot connection
 botToken=TOKEN
@@ -76,26 +72,33 @@ error=CHANNEL ID,PING ID,PING ID
 ### docker compose
 
 ```yml
-version: "2"
 services:
-  node:
-    image: "node:20"
-    user: "www-data"
-    working_dir: /home/node/app
-    env_file: .env
-    volumes:
-      - /var/www/splatoon-calendar:/home/node/app # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN WEB CONTAINER - /web
-    expose:
-      - "8001"
-    ports:
-      - "8204:8001" # first number is port on the server. change this if needed
-    command: "npm start"
-  web:
-    image: php:8.2-apache
-    user: "www-data"
+  splatcal:
+    image: git.awdawd.eu/awd/splatcal:v2.0.0-rc2
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  db:
+    image: mariadb:11
     restart: always
-    ports:
-      - "8104:80" # first number is port on the server. change this if needed
     volumes:
-      - /var/www/splatoon-calendar/web:/var/www/html # first location is on the machine running docker. change this if needed. THIS SHOULD ALWAYS BE SAME AS VOLUME IN NODE CONTAINER + /web
+      - ./database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD} 
+      MARIADB_DATABASE: ${DB_NAME}
+
 ```
