@@ -7,7 +7,7 @@ const sqlConnect = require('../common/sql.js');
 const errorSend = require('../common/errorSend.js');
 
 async function pullData() {
-    webValue = await axios.get("https://splatoonwiki.org/w/index.php?title=Main_Page/Splatfest").then(function (response) {
+    webValue = await axios.get("https://splatoonwiki.org/wiki/Main_Page/Splatfest").then(function (response) {
         // handle success
         let html = (new JSDOM(response.data));
         let teamsLinkAll = html.window.document.querySelectorAll(".splatfest div div > div.bubbleboxbg-darker > div > span > a");
