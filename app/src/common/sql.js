@@ -13,7 +13,6 @@ async function sqlConnect() {
     let sqlconnection = await new Promise((resolve, reject) => {
         sqlcon.connect((err) => {
             if (err) throw err;
-            console.log('MySQL connected');
             resolve(sqlcon);
         });
     });
