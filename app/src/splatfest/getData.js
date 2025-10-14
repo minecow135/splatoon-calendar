@@ -213,9 +213,8 @@ async function insertOneSplatfest({ item, ignoreWin }) {
 async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
-    let eventType = "splatfest";
-    var getWinTeam = 'SELECT `descData`.`id`, `descData`.`calId`, `descData`.`dataTypeId`, `descData`.`data`, `winTeam`.`id` AS winId, `winTeam`.`data`, `win`.`id` AS winnerId FROM `descData` LEFT JOIN `splatCal` ON `descData`.`calId` = `splatCal`.`id` LEFT JOIN `descData` AS `winTeam` ON `descData`.`calId` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `descData`.`calId` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `descData`.`dataTypeId` = 1 AND `descData`.`data` = ? AND `eventTypes`.`data` = ?';
-    sqlconnection.query(getWinTeam, [item[7], item[0], eventType], function (error, events) {
+    var getWinTeam = 'SELECT `splatCal`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `win`.`id` AS winnerId FROM `splatCal` LEFT JOIN `descData` AS `winTeam` ON `splatCal`.`id` = `winTeam`.`calId` AND `winTeam`.`dataTypeId` = 4 AND `winTeam`.`data` = ? LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `splatCal`.`slug` = ?';
+    sqlconnection.query(getWinTeam, [item[7], item[8]], function (error, events) {
         if (error) {
             console.error(error);
             let category = "Splatfest";
@@ -233,7 +232,7 @@ async function insertWinner({ item }) {
                 errorSend({ category, part, error });
             } else {
                 var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
-                sqlconnection.query(sqlGetCalData, [events[0].calId, events[0].winId], function (error, events) {
+                sqlconnection.query(sqlGetCalData, [events[0].id, events[0].winId], function (error, events) {
                     if (error) {
                         console.error(error);
                         let category = "Splatfest";
