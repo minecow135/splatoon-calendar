@@ -220,7 +220,7 @@ async function insertWinner({ item }) {
             errorSend({ category, part, error });
         }
         if (events[0].winnerId) {
-            console.log("winner already inserted (" + item[7] + ")");
+            console.log("winner already inserted for " + item[0] + " (" + item[7] + ")");
         } else {
             if (!events[0]) {
                 let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
