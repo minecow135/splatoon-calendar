@@ -83,7 +83,7 @@ async function getInfo() {
             let { headName, region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
-            imgName = "splatfest-" + slug;
+            let imgLocation = "/img/src/splatfest/" + slug + "/splatfest.jpg"
 
             Jimp.read("https:" + img, function (error, image) {
                 if (error) {
@@ -94,12 +94,12 @@ async function getInfo() {
                     errorSend({ element, category, part, error });
                 }
 
-                image.write(process.env.BASE_DIR_WEB + "/img/src/splatfest/" + slug + "/" + imgName + ".jpg");
+                image.write(process.env.BASE_DIR_WEB + imgLocation);
             });
 
             let wikiUrl = "https://splatoonwiki.org" + teamLink.getAttribute('href');
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
-            let imgUrl = process.env.WEB_URL + "/img/src/splatfest/" + slug + "/" + imgName + ".jpg"
+            let imgUrl = process.env.WEB_URL + imgLocation;
 
             descData.push({
                 name,
