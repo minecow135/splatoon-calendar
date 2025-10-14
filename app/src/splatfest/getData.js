@@ -261,12 +261,9 @@ async function getData() {
             "Tba",
         ]
 
-        if (data) {  
-            let descData = data.descData
+        if (data) {
             
-            for (let index = 0; index < descData.length; index++) {
-                const item = descData[index];
-
+            for (let item of data.descData) {
                 if (!item[7] || ignoreWin.includes(item[7])) {
                     insertOneSplatfest({ item, descData, ignoreWin });
                 } else if (item[7]) {
