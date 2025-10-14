@@ -204,6 +204,9 @@ async function insertOneSplatfest({ item, ignoreWin }) {
         } else {
             console.log("already inserted with id " + GetCount[0].id);
         };
+        if (item[7] && !ignoreWin.includes(item[7])) {
+            insertWinner({ item });
+        }
     });
 };
 
