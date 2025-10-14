@@ -23,8 +23,9 @@ async function getTeamData(teamsLinkAll, count) {
         let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
-        let nameAll = regionHtml.window.document.querySelectorAll("div > b > small");
-        let nameAllBak = regionHtml.window.document.querySelectorAll("div > b");
+        let nameAllSmall = regionHtml.window.document.querySelectorAll("div > b > small");
+        let nameAllSpan = regionHtml.window.document.querySelectorAll("div > b > span");
+        let nameAllFull = regionHtml.window.document.querySelectorAll("div > b");
         let startEndDate = regionHtml.window.document.querySelectorAll("td .mw-formatted-date");
         let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
@@ -32,17 +33,31 @@ async function getTeamData(teamsLinkAll, count) {
             let region = regionAll[3].textContent.trim();
             let teamsStr = teamsAll[1].textContent.trim();
             let img = imgAll[0].getAttribute("src");
-            let name = nameAll[0]?.textContent;
-            let nameBak = nameAllBak[0]?.textContent;
+            let nameSmall = nameAllSmall[0]?.textContent;
+            let nameSpan = nameAllSpan[0]?.textContent;
+            let nameFull = nameAllFull[0]?.textContent;
             let startDate = startEndDate[0].textContent;
             let endDate = startEndDate[1].textContent;
             let winner = winnerAll[0]?.textContent.trim();
-            if (name) {
-                return { region, teamsStr, img, name, startDate, endDate, winner };
+            
+            let name
+            if (nameSmall) {
+                console.log("Name small")
+                name = nameSmall
+            } else if (nameSpan) {
+                console.log("Name span")
+                name = nameSpan
+            } else if (nameFull) {
+                console.log("Name backup")
+                name = nameFull
             } else {
-                name = nameBak 
-                return { region, teamsStr, img, name, startDate, endDate, winner };
+                let nameError = "Splatfest name not found"
+                console.error(nameError)
+                let category = "Splatfest"
+                let part = "Get name"
+                errorSend({ category, part, nameError })
             }
+            return { region, teamsStr, img, name, startDate, endDate, winner };
         } catch (error) {
             console.error(error)
             let category = "Splatfest"
