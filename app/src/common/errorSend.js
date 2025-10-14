@@ -22,9 +22,9 @@ function until(conditionFunction) {
 }
 
 function createMsg(data, discord) {
-  let msg = "# ERROR " + data.category;
+  let msg = "# ERROR " + data.element;
 
-  msg += "\n## " + data.part
+  msg += "\n## " + data.category + ": " + data.part
   msg += "\n\n" + data.error
 
   for (let index = 1; index < discord.length; index++) {
