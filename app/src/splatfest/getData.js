@@ -223,26 +223,24 @@ async function insertWinner({ item }) {
         }
         if (events[0].winnerId) {
             console.log("winner already inserted for " + item[0] + " (" + item[7] + ")");
+        } else if (!events[0].winId) {
+            let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
+            console.error(error);
+            let category = "Splatfest";
+            let part = "Insert winner 2";
+            errorSend({ category, part, error });
         } else {
-            if (!events[0]) {
-                let error = "winner for " + item[0] + " not found in teams (" + item[7] + ")";
-                console.error(error);
-                let category = "Splatfest";
-                let part = "Insert winner 2";
-                errorSend({ category, part, error });
-            } else {
-                var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
-                sqlconnection.query(sqlGetCalData, [events[0].id, events[0].winId], function (error, events) {
-                    if (error) {
-                        console.error(error);
-                        let category = "Splatfest";
-                        let part = "Insert winner 3";
-                        errorSend({ category, part, error });
-                    }
-                    console.log("winner saved for " + item[0] + ": " + item[7]);
-                    sqlconnection.end();
-                });
-            };
+            var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
+            sqlconnection.query(sqlGetCalData, [events[0].id, events[0].winId], function (error, events) {
+                if (error) {
+                    console.error(error);
+                    let category = "Splatfest";
+                    let part = "Insert winner 3";
+                    errorSend({ category, part, error });
+                }
+                console.log("winner saved for " + item[0] + ": " + item[7]);
+                sqlconnection.end();
+            });
         }
     });
 }
