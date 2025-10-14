@@ -20,6 +20,7 @@ async function pullData() {
 async function getTeamData(teamLink) {
     return await axios.get("https://splatoonwiki.org" + teamLink.getAttribute('href')).then(function (regionResponse) {
         let regionHtml = (new JSDOM(regionResponse.data));
+        let headNameAll = regionHtml.window.document.querySelectorAll(".firstHeading > .mw-page-title-main");
         let regionAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let teamsAll = regionHtml.window.document.querySelectorAll("div.tagInfobox table tr td");
         let imgAll = regionHtml.window.document.querySelectorAll("div.tagInfobox img");
@@ -30,6 +31,7 @@ async function getTeamData(teamLink) {
         let winnerAll = regionHtml.window.document.querySelectorAll(".tagInfobox tr:nth-child(6) > td:nth-child(2)");
 
         try {
+            let headName = headNameAll[0].textContent;
             let region = regionAll[3].textContent.trim();
             let teamsStr = teamsAll[1].textContent.trim();
             let img = imgAll[0].getAttribute("src");
@@ -57,7 +59,7 @@ async function getTeamData(teamLink) {
                 let part = "Get name"
                 errorSend({ category, part, nameError })
             }
-            return { region, teamsStr, img, name, startDate, endDate, winner };
+            return { headName, region, teamsStr, img, name, startDate, endDate, winner };
         } catch (error) {
             console.error(error)
             let category = "Splatfest"
@@ -71,21 +73,20 @@ async function getInfo() {
     let { teamsLinkAll } = await pullData();
 
     let descData = [];
-    let count = 0;
 
     for (let teamLink of teamsLinkAll) {
         let teamdata = await getTeamData(teamLink)
 
         if (teamdata) {
-            let { region, teamsStr, img, name, startDate, endDate, winner } = teamdata
+            let { headName, region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
-            let splatfestName = name.replace(/[^A-Z0-9]+/ig, "_");
-            imgName = "splatfest-" + splatfestName;
+            let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
+            imgName = "splatfest-" + slug;
 
             Jimp.read("https:" + img, function (err, image) {
                 if (err) throw err;
 
-                image.write(process.env.BASE_DIR_WEB + "/img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg");
+                image.write(process.env.BASE_DIR_WEB + "/img/src/splatfest/" + slug + "/" + imgName + ".jpg");
             });
 
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
@@ -95,10 +96,11 @@ async function getInfo() {
                 region,
                 "https://splatoonwiki.org" + teamLink.getAttribute('href'),
                 teams,
-                process.env.WEB_URL + "img/src/splatfest/" + splatfestName + "/" + imgName + ".jpg",
+                process.env.WEB_URL + "img/src/splatfest/" + slug + "/" + imgName + ".jpg",
                 startDate,
                 endDate,
                 winner,
+                slug,
             ]);
         };
     };
@@ -110,13 +112,14 @@ async function insertOneSplatfest({ item, ignoreWin }) {
 
     let event = 1;
     let title = "Splatfest";
+    let slug = item[8];
     let startDateFirst = new Date(item[5]);
     let endDateFirst = new Date(item[6]);
     let created = new Date(Date.now());
     let uid = nanoid() + "@splatfest.awdawd.eu";
 
-    var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatCal` WHERE `startDate` = ?';
-    sqlconnection.query(sqlGetDate, [startDateFirst], function (error, GetCount) {
+    var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatCal` WHERE `slug` = ?';
+    sqlconnection.query(sqlGetDate, [slug], function (error, GetCount) {
         if (error) {
             console.error(error);
             let category = "Splatfest";
@@ -124,8 +127,8 @@ async function insertOneSplatfest({ item, ignoreWin }) {
             errorSend({ category, part, error });
         }
         if (GetCount[0].count === 0) {
-            var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?)';
-            sqlconnection.query(sqlInsert, [event, title, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
+            var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?)';
+            sqlconnection.query(sqlInsert, [event, title, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
                 console.log("Splatfest Inserted");
                 if (error) {
                     console.error(error);
