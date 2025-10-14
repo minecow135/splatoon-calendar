@@ -24,7 +24,7 @@ async function checkTables() {
 
     await sleep(20);
 
-    let createTable_descData = "CREATE TABLE `descData` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `locationNum` int(11) NOT NULL, `dataCalId` int(11) NOT NULL, `dataTypeId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`dataTypeId`) REFERENCES `dataTypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_descData = "CREATE TABLE `descData` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `dataCalId` int(11) NOT NULL, `dataTypeId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`dataTypeId`) REFERENCES `dataTypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("descData", createTable_descData);
 
     await sleep(20);

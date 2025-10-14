@@ -10,10 +10,10 @@ async function createIcs() {
     sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
         if (error) throw error;
         if (events){
-            var sqlGetCalDescData = 'SELECT descName.calId, descName.locationNum, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 AND descName.locationNum = descLocation.locationNum LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 AND descLink.locationNum = descLocation.locationNum WHERE descName.dataTypeId = 1 ORDER BY descName.locationNum';
+            var sqlGetCalDescData = 'SELECT descName.calId, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 WHERE descName.dataTypeId = 1';
             sqlconnection.query(sqlGetCalDescData, function (error, desc) {
                 if (error) throw error;
-                var sqlGetCalDescTeams = 'SELECT id, calId, locationNum, dataCalId, data FROM descData WHERE dataTypeId = 4;';
+                var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
                 sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
                     if (error) throw error;
 
@@ -24,7 +24,7 @@ async function createIcs() {
                             if (descItem.calId === event.id) {
                                 let teamsStr = "";
                                 for (const team of teams) {
-                                    if (team.calId === event.id && team.locationNum === descItem.locationNum) {
+                                    if (team.calId === event.id) {
                                         if (teamsStr != "") {
                                             teamsStr += " vs. ";
                                         }
