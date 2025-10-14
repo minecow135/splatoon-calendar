@@ -262,15 +262,8 @@ async function getData() {
         ]
 
         if (data) {
-            
             for (let item of data.descData) {
-                if (!item[7] || ignoreWin.includes(item[7])) {
-                    insertOneSplatfest({ item, descData, ignoreWin });
-                } else if (item[7]) {
-                    insertWinner({ item });
-                } else {
-                    console.log("no splatfest or winner announced");
-                };
+                insertOneSplatfest({ item, descData, ignoreWin });
             };
         };
     } catch (error) {
