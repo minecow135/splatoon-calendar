@@ -138,8 +138,8 @@ async function insertOneSplatfest({ item, ignoreWin }) {
             errorSend({ element, category, part, error });
         }
         if (GetCount[0].count === 0) {
-            var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?)';
-            sqlconnection.query(sqlInsert, [event, title, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
+            var sqlInsert = 'INSERT INTO `splatCal` (`eventId`, `title`, `name`, `region`, `wikiUrl`, `imgUrl`,  `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            sqlconnection.query(sqlInsert, [event, title, item.name, item.region, item.wikiUrl, item.imgUrl, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
                 console.log("Splatfest Inserted");
                 if (error) {
                     console.error(error);

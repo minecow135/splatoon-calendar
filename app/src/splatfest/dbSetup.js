@@ -19,7 +19,7 @@ async function checkTables() {
     let createTable_messageTypes = "CREATE TABLE `messageTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `eventId` int(11) NOT NULL, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`eventId`) REFERENCES `eventTypes` (`id`));";
     createTables("messageTypes", createTable_messageTypes);
 
-    let createTable_splatCal = "CREATE TABLE `splatCal` (`id` int(11) NOT NULL AUTO_INCREMENT, `eventId` int(11) NOT NULL, `title` varchar(20) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`eventId`) REFERENCES `eventTypes` (`id`));";
+    let createTable_splatCal = "CREATE TABLE `splatCal` (`id` int(11) NOT NULL AUTO_INCREMENT, `eventId` int(11) NOT NULL, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgUrl` varchar(175) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`eventId`) REFERENCES `eventTypes` (`id`));";
     createTables("splatCal", createTable_splatCal);
 
     await sleep(20);
