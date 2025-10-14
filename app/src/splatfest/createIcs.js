@@ -2,20 +2,39 @@ const ics = require('ics');
 const { writeFileSync } = require('fs');
 
 const sqlConnect = require('../common/sql.js');
+const errorSend = require('../common/errorSend.js');
 
 async function createIcs() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
     var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
-        if (error) throw error;
+        if (error) {
+            console.error(error);
+            let element = "Splatfest";
+            let category = "Create ICS";
+            let part = "Get Event";
+            errorSend({ element, category, part, error });
+        };
         if (events){
             var sqlGetCalDescData = 'SELECT descName.calId, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 WHERE descName.dataTypeId = 1';
             sqlconnection.query(sqlGetCalDescData, function (error, desc) {
-                if (error) throw error;
+                if (error) {
+                    console.error(error);
+                    let element = "Splatfest";
+                    let category = "Create ICS";
+                    let part = "Get event data";
+                    errorSend({ element, category, part, error });
+                };
                 var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
                 sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
-                    if (error) throw error;
+                    if (error) {
+                        console.error(error);
+                        let element = "Splatfest";
+                        let category = "Create ICS";
+                        let part = "Get event teams";
+                        errorSend({ element, category, part, error });
+                    };
 
                     let eventArr = [];
                     for (const event of events) {

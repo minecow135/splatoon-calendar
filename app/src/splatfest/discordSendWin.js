@@ -1,4 +1,5 @@
 const sqlConnect = require('../common/sql.js');
+const errorSend = require('../common/errorSend.js');
 const discordConnect = require('../common/discord.js');
 
 function getEnv(prefix) {
@@ -58,11 +59,24 @@ async function sendMsg(SplatCalData, id, discordChannel) {
     await until(_ => discordConnect.readyTimestamp);
     var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `messageType` = 2";
     sqlconnection.query(sqlGetCalData, [ discordChannel, id ], async function (error, DiscordSent ) {
+        if (error) {
+            console.error(error);
+            let element = "Splatfest";
+            let category = "Send win";
+            let part = "Check if message sent";
+            errorSend({ element, category, part, error });
+        };
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
                 var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '2')";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
-                    if (error) throw error;
+                    if (error) {
+                        console.error(error);
+                        let element = "Splatfest";
+                        let category = "Send win";
+                        let part = "Insert mesage sent";
+                        errorSend({ element, category, part, error });
+                    };
                     console.log("Win message sent! calendar id:", id, "channel id:", discordChannel, "message id:", msg.id, "db send id:", events.insertId);
                     sqlconnection.end();
                 });
@@ -76,17 +90,35 @@ async function discordSend() {
     eventType = "splatfest";
     var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `win`.`descId`, `descData`.`data` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `descData` ON `win`.`descId` = `descData`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
-        if (error) throw error;
+        if (error) {
+            console.error(error);
+            let element = "Splatfest";
+            let category = "Send win";
+            let part = "Get event";
+            errorSend({ element, category, part, error });
+        };
         if (events && events.length > 0) {
             var sqlGetCalDescData = 'SELECT descName.calId, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData, descImg.id AS imgId, descImg.data AS imgData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 LEFT JOIN descData AS descImg ON descImg.calId = descName.calId AND descImg.dataTypeId = 5 WHERE descName.dataTypeId = 1';
             sqlconnection.query(sqlGetCalDescData, function (error, desc) {
-                if (error) throw error;
+                if (error) {
+                    console.error(error);
+                    let element = "Splatfest";
+                    let category = "Send win";
+                    let part = "Get event data";
+                    errorSend({ element, category, part, error });
+                };
                 if (!desc || desc.length === 0) {
                     console.log("description not found in database")
                 } else {
                     var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
                     sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
-                        if (error) throw error;
+                        if (error) {
+                            console.error(error);
+                            let element = "Splatfest";
+                            let category = "Send win";
+                            let part = "Get event teams";
+                            errorSend({ element, category, part, error });
+                        };
                         if (teams && teams.length > 0) {
                             let eventArr = [];
                             for (const event of events) {
