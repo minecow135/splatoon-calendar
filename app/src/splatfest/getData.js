@@ -85,8 +85,14 @@ async function getInfo() {
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
             imgName = "splatfest-" + slug;
 
-            Jimp.read("https:" + img, function (err, image) {
-                if (err) throw err;
+            Jimp.read("https:" + img, function (error, image) {
+                if (error) {
+                    console.error(error);
+                    let element = "Splatfest";
+                    let category = "Get data";
+                    let part = "Read image";
+                    errorSend({ element, category, part, error });
+                }
 
                 image.write(process.env.BASE_DIR_WEB + "/img/src/splatfest/" + slug + "/" + imgName + ".jpg");
             });
