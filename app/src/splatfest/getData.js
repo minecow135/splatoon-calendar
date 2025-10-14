@@ -204,7 +204,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
         } else {
             console.log("already inserted with id " + GetCount[0].id);
         };
-        if (item[7] && !ignoreWin.includes(item[7])) {
+        if (item[7] && !ignoreWin.includes(item[7].toLowerCase())) {
             insertWinner({ item });
         }
     });
@@ -253,12 +253,8 @@ async function getData() {
         let data = await getInfo();
 
         ignoreWin = [
-            "TBD",
             "tbd",
-            "Tbd",
-            "TBA",
             "tba",
-            "Tba",
         ]
 
         if (data) {
