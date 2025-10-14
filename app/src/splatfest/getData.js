@@ -53,11 +53,11 @@ async function getTeamData(teamLink) {
                 console.log("Name backup")
                 name = nameFull
             } else {
-                let nameError = "Splatfest name not found"
-                console.error(nameError)
+                let error = "Splatfest name not found";
+                console.error(error);
                 let category = "Splatfest"
                 let part = "Get name"
-                errorSend({ category, part, nameError })
+                errorSend({ category, part, error })
             }
             return { headName, region, teamsStr, img, name, startDate, endDate, winner };
         } catch (error) {
