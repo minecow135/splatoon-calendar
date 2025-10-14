@@ -11,8 +11,8 @@ async function sqlConnect() {
     let sqlcon = mysql.createConnection(sql);
 
     let sqlconnection = await new Promise((resolve, reject) => {
-        sqlcon.connect((err) => {
-            if (err) throw err;
+        sqlcon.connect((error) => {
+            if (error) throw error;
             resolve(sqlcon);
         });
     });
