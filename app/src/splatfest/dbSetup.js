@@ -10,9 +10,6 @@ function sleep(ms) {
 async function checkTables() {
     let createTable_eventTypes = "CREATE TABLE `eventTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`));";
     createTables("eventTypes", createTable_eventTypes);
-    
-    let createTable_dataTypes = "CREATE TABLE `dataTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`));";
-    createTables("dataTypes", createTable_dataTypes);
 
     await sleep(20);
 
@@ -24,7 +21,7 @@ async function checkTables() {
 
     await sleep(20);
 
-    let createTable_descData = "CREATE TABLE `descData` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `dataCalId` int(11) NOT NULL, `dataTypeId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`dataTypeId`) REFERENCES `dataTypes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_descData = "CREATE TABLE `descData` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `dataCalId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("descData", createTable_descData);
 
     await sleep(20);
@@ -41,17 +38,6 @@ async function checkTables() {
 
 async function insertRows() {
     insertData("eventTypes", 1, "splatfest");
-
-    await sleep(20);
-
-    insertData("dataTypes", 1, "Name");
-    insertData("dataTypes", 2, "Location");
-    insertData("dataTypes", 3, "Link");
-    insertData("dataTypes", 4, "Team");
-
-    await sleep(20);
-
-    insertData("dataTypes", 5, "imgUrl");
 
     await sleep(20);
 

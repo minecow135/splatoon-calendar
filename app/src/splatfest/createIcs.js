@@ -17,7 +17,7 @@ async function createIcs() {
             errorSend({ element, category, part, error });
         };
         if (events) {
-            var sqlGetCalDescTeams = 'SELECT id, data FROM descData WHERE dataTypeId = 4;';
+            var sqlGetCalDescTeams = 'SELECT id, data FROM descData;';
             sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
                 if (error) {
                     console.error(error);
