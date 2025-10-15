@@ -110,49 +110,30 @@ async function discordSend() {
                 if (!desc || desc.length === 0) {
                     console.log("description not found in database")
                 } else {
-                    var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
-                    sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
-                        if (error) {
-                            console.error(error);
-                            let element = "Splatfest";
-                            let category = "Send win";
-                            let part = "Get event teams";
-                            errorSend({ element, category, part, error });
-                        };
-                        if (teams && teams.length > 0) {
-                            let eventArr = [];
-                            for (const event of events) {
-                                let description = [];
-                                for (const descItem of desc) {
-                                    if (descItem.calId === event.id) {
-                                        let teamsArr = [];
-                                        for (const team of teams) {
-                                            if (team.calId === event.id) {
-                                                teamsArr.push(team);
-                                            };
-                                        };
-                                        descItem.teams = teamsArr;
-                                        descItem.winner = event.data;
-                                        description.push(descItem);
-                                    };
-                                };
-
-                                let id = event.id;
-                                let title = event.title + " winner";
-                                let start = event.startDate;
-                                let end = event.endDate;
-
-                                eventArr.push({ id, title, description, start, end, });
-                            };
-                            for (const event of eventArr) {
-                                const env = getEnv("splatfestWin");
-                                for (const item of env) {
-                                    msg = createMsg(event, item);
-                                    sendMsg(msg, event.id, item[0]);
-                                };
+                    let eventArr = [];
+                    for (const event of events) {
+                        let description = [];
+                        for (const descItem of desc) {
+                            if (descItem.calId === event.id) {
+                                descItem.winner = event.data;
+                                description.push(descItem);
                             };
                         };
-                    });
+
+                        let id = event.id;
+                        let title = event.title + " winner";
+                        let start = event.startDate;
+                        let end = event.endDate;
+
+                        eventArr.push({ id, title, description, start, end, });
+                    };
+                    for (const event of eventArr) {
+                        const env = getEnv("splatfestWin");
+                        for (const item of env) {
+                            msg = createMsg(event, item);
+                            sendMsg(msg, event.id, item[0]);
+                        };
+                    };
                 };
                 sqlconnection.end();
             });
