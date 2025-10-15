@@ -57,7 +57,13 @@ async function createIcs() {
                 };
 
                 const { icsError, value } = ics.createEvents(eventArr);
-                if (icsError) throw icsError;
+                if (icsError) {
+                    console.error(error);
+                    let element = "Splatfest";
+                    let category = "Create ICS";
+                    let part = "Create ics";
+                    errorSend({ element, category, part, icsError });
+                };
 
                 console.log("Calendar updated");
 
