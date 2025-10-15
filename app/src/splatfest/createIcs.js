@@ -67,6 +67,7 @@ async function createIcs() {
             });
         } else {
             console.log("no splatfests saved");
+            sqlconnection.end();
         };
     });
 };
