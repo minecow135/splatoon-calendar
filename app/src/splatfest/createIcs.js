@@ -39,8 +39,12 @@ async function createIcs() {
                     }
 
                     description += event.region + ":";
+                    description += "\n" + event.name;
                     description += "\n" + teamsStr;
                     description += "\n" + event.wikiUrl;
+                    if (event.winner) {
+                        description += "\n" + "Winner: " + event.winner;
+                    }
 
                     let title = event.title;
                     let busyStatus = 'FREE';
