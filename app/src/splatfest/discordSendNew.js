@@ -100,7 +100,7 @@ async function discordSend() {
         };
         if (events && events.length > 0) {
             for (const event of events) {
-                var sqlGetCalDescTeams = 'SELECT id, data FROM descData WHERE `calId` = ?';
+                var sqlGetCalDescTeams = 'SELECT id, data FROM splatfest_teams WHERE `calId` = ?';
                 sqlconnection.query(sqlGetCalDescTeams, [ event.id ], function (error, teams) {
                     if (error) {
                         console.error(error);

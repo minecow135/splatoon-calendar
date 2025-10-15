@@ -7,7 +7,7 @@ const errorSend = require('../common/errorSend.js');
 async function createIcs() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`wikiUrl`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid`, `descData`.`data` AS winner FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `descData` ON `win`.`descId` = `descData`.`id` WHERE `eventTypes`.`data` = ?';
+    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`wikiUrl`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid`, `splatfest_teams`.`data` AS winner FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
@@ -17,7 +17,7 @@ async function createIcs() {
             errorSend({ element, category, part, error });
         };
         if (events) {
-            var sqlGetCalDescTeams = 'SELECT id, data FROM descData;';
+            var sqlGetCalDescTeams = 'SELECT id, data FROM splatfest_teams;';
             sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
                 if (error) {
                     console.error(error);
