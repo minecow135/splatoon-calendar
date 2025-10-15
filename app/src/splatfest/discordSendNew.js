@@ -25,22 +25,18 @@ function until(conditionFunction) {
 
 function createMsg(data, discord) {
     let msg = "# " + data.title;
-    msg += "\n<t:" + Math.floor(new Date(data.start).getTime() / 1000) + ":f> - <t:" + Math.floor(new Date(data.end).getTime() / 1000) + ":f>";
-    let img = [];
-    for (const dataRegion of data.description) {
-        msg += "\n\n## " + dataRegion.locationData + ":";
-        msg += "\n    **" + dataRegion.nameData + "**";
-        count = 0;
-        for (const team of dataRegion.teams) {
-            if (count === 0) {
-                msg += "\n    ";
-            } else {
-                msg += ",  ";
-            };
-            msg += team.data;
-            count ++;
+    msg += "\n<t:" + Math.floor(new Date(data.startDate).getTime() / 1000) + ":f> - <t:" + Math.floor(new Date(data.endDate).getTime() / 1000) + ":f>";
+    msg += "\n\n## " + data.region + ":";
+    msg += "\n    **" + data.name + "**";
+    count = 0;
+    for (const team of data.teams) {
+        if (count === 0) {
+            msg += "\n    ";
+        } else {
+            msg += ",  ";
         };
-        img.push(dataRegion.imgData);
+        msg += team.data;
+        count ++;
     };
 
     for (let index = 1; index < discord.length; index++) {
@@ -53,12 +49,8 @@ function createMsg(data, discord) {
         msg += "<@&" + element + ">";
     };
 
-    if (img) {
-        msg += "\n-# ";
-        for (const image of img) {
-            msg += "[image](" + image + ") ";
-        };
-    };
+    msg += "\n-# ";
+    msg += "[image](" + data.imgUrl + ") ";
 
     return msg;
 }
@@ -97,7 +89,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` =  ?';
+    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`imgUrl`, `splatCal`.`startDate`, `splatCal`.`endDate` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
@@ -107,66 +99,26 @@ async function discordSend() {
             errorSend({ element, category, part, error });
         };
         if (events && events.length > 0) {
-            var sqlGetCalDescData = 'SELECT descName.calId, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData, descImg.id AS imgId, descImg.data AS imgData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 LEFT JOIN descData AS descImg ON descImg.calId = descName.calId AND descImg.dataTypeId = 5 WHERE descName.dataTypeId = 1';
-            sqlconnection.query(sqlGetCalDescData, function (error, desc) {
-                if (error) {
-                    console.error(error);
-                    let element = "Splatfest";
-                    let category = "Send new";
-                    let part = "Get event data";
-                    errorSend({ element, category, part, error });
-                };
-                if (!desc || desc.length === 0) {
-                    console.log("description not found in database")
-                } else {
-                    var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
-                    sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
-                        if (error) {
-                            console.error(error);
-                            let element = "Splatfest";
-                            let category = "Send new";
-                            let part = "Get event teams";
-                            errorSend({ element, category, part, error });
-                        };
-                        if (teams && teams.length > 0) {
-                            let eventArr = [];
-                            for (const event of events) {
-                                let description = [];
-                                for (const descItem of desc) {
-                                    if (descItem.calId === event.id) {
-                                        let teamsArr = [];
-                                        for (const team of teams) {
-                                            if (team.calId === event.id) {
-                                                teamsArr.push(team);
-                                            };
-                                        };
-                                        descItem.teams = teamsArr;
-                                        description.push(descItem);
-                                    };
-                                };
+            for (const event of events) {
+                var sqlGetCalDescTeams = 'SELECT id, data FROM descData WHERE dataTypeId = 4 AND `calId` = ?';
+                sqlconnection.query(sqlGetCalDescTeams, [ event.id ], function (error, teams) {
+                    if (error) {
+                        console.error(error);
+                        let element = "Splatfest";
+                        let category = "Send new";
+                        let part = "Get event teams";
+                        errorSend({ element, category, part, error });
+                    };
 
-                                let id = event.id;
-                                let title = event.title;
-                                let start = event.startDate;
-                                let end = event.endDate;
+                    event.teams = teams
 
-                                eventArr.push({ id, title, description, start, end, });
-                            };
-                            for (const event of eventArr) {
-                                const env = getEnv("splatfestNew");
-                                for (const item of env) {
-                                    msg = createMsg(event, item);
-                                    sendMsg(msg, event.id, item[0]);
-                                };
-                            };
-                        };
-                    });
-                };
-                sqlconnection.end();
-            });
-        } else {
-            console.log("no new splatfests");
-            sqlconnection.end();
+                    const env = getEnv("splatfestNew");
+                    for (const item of env) {
+                        msg = createMsg(event, item);
+                        sendMsg(msg, event.id, item[0]);
+                    };
+                });
+            };
         };
     });
 };
