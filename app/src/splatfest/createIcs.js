@@ -7,7 +7,7 @@ const errorSend = require('../common/errorSend.js');
 async function createIcs() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
+    var sqlGetCalData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`wikiUrl`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatCal`.`created`, `splatCal`.`uid`, `win`.`descId` AS winnerId, `descData`.`data` AS winner FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `descData` ON `win`.`descId` = `descData`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
@@ -16,67 +16,50 @@ async function createIcs() {
             let part = "Get Event";
             errorSend({ element, category, part, error });
         };
-        if (events){
-            var sqlGetCalDescData = 'SELECT descName.calId, descName.id AS nameId, descName.data AS nameData, descLocation.id AS locationId, descLocation.data AS locationData, descLink.id AS linkId, descLink.data AS linkData FROM descData AS descName LEFT JOIN descData AS descLocation ON descLocation.calId = descName.calId AND descLocation.dataTypeId = 2 LEFT JOIN descData AS descLink ON descLink.calId = descName.calId AND descLink.dataTypeId = 3 WHERE descName.dataTypeId = 1';
-            sqlconnection.query(sqlGetCalDescData, function (error, desc) {
+        if (events) {
+            var sqlGetCalDescTeams = 'SELECT id, data FROM descData WHERE dataTypeId = 4;';
+            sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
                 if (error) {
                     console.error(error);
                     let element = "Splatfest";
                     let category = "Create ICS";
-                    let part = "Get event data";
+                    let part = "Get event teams";
                     errorSend({ element, category, part, error });
                 };
-                var sqlGetCalDescTeams = 'SELECT id, calId, dataCalId, data FROM descData WHERE dataTypeId = 4;';
-                sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
-                    if (error) {
-                        console.error(error);
-                        let element = "Splatfest";
-                        let category = "Create ICS";
-                        let part = "Get event teams";
-                        errorSend({ element, category, part, error });
-                    };
 
-                    let eventArr = [];
-                    for (const event of events) {
-                        let description = "";
-                        for (const descItem of desc) {
-                            if (descItem.calId === event.id) {
-                                let teamsStr = "";
-                                for (const team of teams) {
-                                    if (team.calId === event.id) {
-                                        if (teamsStr != "") {
-                                            teamsStr += " vs. ";
-                                        }
-                                        teamsStr += team.data;
-                                    }
-                                }
-                                if (description != "") {
-                                    description += "\n\n";
-                                }
-                                description += descItem.locationData;
-                                description += "\n" + teamsStr;
-                                description += "\n" + descItem.linkData;
-                            }
+                let eventArr = [];
+                for (const event of events) {
+                    let description = "";
+                    let teamsStr = "";
+                    for (const team of teams) {
+                        if (teamsStr != "") {
+                            teamsStr += " vs. ";
                         }
-                        let title = event.title;
-                        let busyStatus = 'FREE';
-                        let start = [ event.startDate.getFullYear(), event.startDate.getMonth()+1, event.startDate.getDate(), event.startDate.getHours(), event.startDate.getMinutes() ];
-                        let end = [ event.endDate.getFullYear(), event.endDate.getMonth()+1, event.endDate.getDate(), event.endDate.getHours(), event.endDate.getMinutes() ];
-                        let uid = event.uid;
-                        let created = [ event.created.getFullYear(), event.created.getMonth()+1, event.created.getDate(), event.created.getHours(), event.created.getMinutes() ];
+                        teamsStr += team.data;
+                    }
 
-                        eventArr.push({ title, description, busyStatus, start, end, uid, created });
-                    };
+                    description += event.region;
+                    description += "\n" + teamsStr;
+                    description += "\n" + event.wikiUrl;
 
-                    const { icsError, value } = ics.createEvents(eventArr);
-                    if (icsError) throw icsError;
+                    let title = event.title;
+                    let busyStatus = 'FREE';
+                    let start = [ event.startDate.getFullYear(), event.startDate.getMonth()+1, event.startDate.getDate(), event.startDate.getHours(), event.startDate.getMinutes() ];
+                    let end = [ event.endDate.getFullYear(), event.endDate.getMonth()+1, event.endDate.getDate(), event.endDate.getHours(), event.endDate.getMinutes() ];
+                    let uid = event.uid;
+                    let created = [ event.created.getFullYear(), event.created.getMonth()+1, event.created.getDate(), event.created.getHours(), event.created.getMinutes() ];
 
-                    console.log("Calendar updated");
+                    eventArr.push({ title, description, busyStatus, start, end, uid, created });
+                };
 
-                    writeFileSync(process.env.BASE_DIR_WEB + `splatfest.ics`, value);
+                const { icsError, value } = ics.createEvents(eventArr);
+                if (icsError) throw icsError;
 
-                    sqlconnection.end();
-                });
+                console.log("Calendar updated");
+
+                writeFileSync(process.env.BASE_DIR_WEB + `splatfest.ics`, value);
+
+                sqlconnection.end();
             });
         } else {
             console.log("no splatfests saved");
