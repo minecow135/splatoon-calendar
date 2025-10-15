@@ -38,7 +38,7 @@ async function createIcs() {
                         teamsStr += team.data;
                     }
 
-                    description += event.region;
+                    description += event.region + ":";
                     description += "\n" + teamsStr;
                     description += "\n" + event.wikiUrl;
 
