@@ -152,42 +152,6 @@ async function insertOneSplatfest({ item, ignoreWin }) {
                 let descCount = 1;
                 var sqlInsertDesc = 'INSERT INTO `descData` (`CalId`, `dataCalId`, `DataTypeId`, `data`) VALUES (?, ?, ?, ?)';
 
-                sqlconnection.query(sqlInsertDesc, [insertResult.insertId, descCount, 1, item.name], function (error, insertResult) {
-                    if (error) {
-                        console.error(error);
-                        let element = "Splatfest";
-                        let category = "Get data";
-                        let part = "Name insert";
-                        errorSend({ element, category, part, error });
-                    }
-                    console.log("Name inserted");
-                });
-                descCount++;
-
-                sqlconnection.query(sqlInsertDesc, [insertResult.insertId, descCount, 2, item.region], function (error, insertResult) {
-                    if (error) {
-                        console.error(error);
-                        let element = "Splatfest";
-                        let category = "Get data";
-                        let part = "location insert";
-                        errorSend({ element, category, part, error });
-                    }
-                    console.log("location inserted");
-                });
-                descCount++;
-
-                sqlconnection.query(sqlInsertDesc, [insertResult.insertId, descCount, 3, item.wikiUrl], function (error, insertResult) {
-                    if (error) {
-                        console.error(error);
-                        let element = "Splatfest";
-                        let category = "Get data";
-                        let part = "link insert";
-                        errorSend({ element, category, part, error });
-                    }
-                    console.log("link inserted");
-                });
-                descCount++;
-
                 teamNum = 1;
                 for (const team of item.teams) {
                     sqlconnection.query(sqlInsertDesc, [insertResult.insertId, descCount, 4, team], function (error, insertResult) {
@@ -203,18 +167,6 @@ async function insertOneSplatfest({ item, ignoreWin }) {
                     teamNum++;
                     descCount++;
                 }
-
-                sqlconnection.query(sqlInsertDesc, [insertResult.insertId, descCount, 5, item.imgUrl], function (error, insertResult) {
-                    if (error) {
-                        console.error(error);
-                        let element = "Splatfest";
-                        let category = "Get data";
-                        let part = "image link insert";
-                        errorSend({ element, category, part, error });
-                    }
-                    console.log("image link inserted");
-                });
-                descCount++;
 
                 sqlconnection.end();
             });
