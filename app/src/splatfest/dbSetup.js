@@ -13,7 +13,7 @@ async function checkTables() {
 
     await sleep(20);
 
-    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `team` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `team` varchar(25) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("splatfest_teams", createTable_splatfest_teams);
 
     await sleep(20);
