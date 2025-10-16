@@ -83,7 +83,7 @@ async function getInfo() {
             let { headName, region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
-            let imgLocation = "/img/src/splatfest/" + slug + "/splatfest.jpg"
+            let imgLocation = "/event/splatfest/src/" + slug + "/img/splatfest.jpg"
 
             Jimp.read("https:" + img, function (error, image) {
                 if (error) {
