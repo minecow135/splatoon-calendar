@@ -1,7 +1,7 @@
 # TODO
 
 ## Next release (2.0.0)
-- [ ] change table names for easier expansion later
+- [x] change table names for easier expansion later
 - [ ] reorganize files after event type
   - event/
     - splatfest/
