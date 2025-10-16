@@ -59,7 +59,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
     let sqlconnection = await sqlConnect();
     await until(_ => discordConnect.readyTimestamp);
     let messageType = "new";
-    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `splatfestId` = ? AND `messageType` = ?";
+    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `splatfest_discordSent` WHERE `channelId` = ? AND `splatfestId` = ? AND `messageType` = ?";
     sqlconnection.query(sqlGetCalData, [ discordChannel, id, messageType ], async function (error, DiscordSent ) {
         if (error) {
             console.error(error);
@@ -70,7 +70,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
         };
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
-                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `splatfestId`, `messageType`) VALUES (?, ?, ?, ?)";
+                var sqlGetCalData = "INSERT INTO `splatfest_discordSent` (`channelId`, `messageId`, `splatfestId`, `messageType`) VALUES (?, ?, ?, ?)";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id, messageType ], function (error, events) {
                     if (error) {
                         console.error(error);

@@ -21,8 +21,8 @@ async function checkTables() {
     let createTable_splatfest_win = "CREATE TABLE `splatfest_win` ( `id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `teamId` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`teamId`) REFERENCES `splatfest_teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("splatfest_win", createTable_splatfest_win);
 
-    let createTable_discordSent = "CREATE TABLE `discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `splatfestId` int(11) NOT NULL, `messageType` varchar(10) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
-    createTables("discordSent", createTable_discordSent);
+    let createTable_splatfest_discordSent = "CREATE TABLE `splatfest_discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `splatfestId` int(11) NOT NULL, `messageType` varchar(10) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    createTables("splatfest_discordSent", createTable_splatfest_discordSent);
 
     await sleep(20);
     insertRows();
