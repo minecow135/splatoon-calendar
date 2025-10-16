@@ -2,7 +2,7 @@
 
 ## Next release (2.0.0)
 - [x] change table names for easier expansion later
-- [ ] reorganize files after event type
+- [x] reorganize files after event type
   - event/
     - splatfest/
       - splatfest.ics
