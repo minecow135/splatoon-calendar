@@ -6,9 +6,8 @@ const errorSend = require('../common/errorSend.js');
 
 async function createIcs() {
     let sqlconnection = await sqlConnect();
-    eventType = "splatfest";
-    var sqlGetCalData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`wikiUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_splatfest`.`created`, `splatfest_splatfest`.`uid`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ?';
-    sqlconnection.query(sqlGetCalData, [ eventType ], function (error, events) {
+    var sqlGetCalData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`wikiUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_splatfest`.`created`, `splatfest_splatfest`.`uid`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`descId` = `splatfest_teams`.`id`';
+    sqlconnection.query(sqlGetCalData, function (error, events) {
         if (error) {
             console.error(error);
             let element = "Splatfest";

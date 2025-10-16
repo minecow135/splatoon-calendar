@@ -8,15 +8,10 @@ function sleep(ms) {
 }
 
 async function checkTables() {
-    let createTable_eventTypes = "CREATE TABLE `eventTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`));";
-    createTables("eventTypes", createTable_eventTypes);
-
-    await sleep(20);
-
-    let createTable_messageTypes = "CREATE TABLE `messageTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `eventId` int(11) NOT NULL, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`eventId`) REFERENCES `eventTypes` (`id`));";
+    let createTable_messageTypes = "CREATE TABLE `messageTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`));";
     createTables("messageTypes", createTable_messageTypes);
 
-    let createTable_splatfest_splatfest = "CREATE TABLE `splatfest_splatfest` (`id` int(11) NOT NULL AUTO_INCREMENT, `eventId` int(11) NOT NULL, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgUrl` varchar(175) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`eventId`) REFERENCES `eventTypes` (`id`));";
+    let createTable_splatfest_splatfest = "CREATE TABLE `splatfest_splatfest` (`id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgUrl` varchar(175) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`));";
     createTables("splatfest_splatfest", createTable_splatfest_splatfest);
 
     await sleep(20);
@@ -37,12 +32,8 @@ async function checkTables() {
 }
 
 async function insertRows() {
-    insertData("eventTypes", 1, "splatfest");
-
-    await sleep(20);
-
-    insertData("messageTypes", 1, "newSplatfest", 1);
-    insertData("messageTypes", 2, "splatfestWin", 1);
+    insertData("messageTypes", 1, "newSplatfest");
+    insertData("messageTypes", 2, "splatfestWin");
 }
 
 module.exports = checkTables;

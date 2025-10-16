@@ -120,7 +120,6 @@ async function getInfo() {
 async function insertOneSplatfest({ item, ignoreWin }) {
     let sqlconnection = await sqlConnect();
 
-    let event = 1;
     let title = "Splatfest";
     let slug = item.slug;
     let startDateFirst = new Date(item.startDate);
@@ -138,8 +137,8 @@ async function insertOneSplatfest({ item, ignoreWin }) {
             errorSend({ element, category, part, error });
         }
         if (GetCount[0].count === 0) {
-            var sqlInsert = 'INSERT INTO `splatfest_splatfest` (`eventId`, `title`, `name`, `region`, `wikiUrl`, `imgUrl`,  `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            sqlconnection.query(sqlInsert, [event, title, item.name, item.region, item.wikiUrl, item.imgUrl, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
+            var sqlInsert = 'INSERT INTO `splatfest_splatfest` (`title`, `name`, `region`, `wikiUrl`, `imgUrl`,  `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            sqlconnection.query(sqlInsert, [title, item.name, item.region, item.wikiUrl, item.imgUrl, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
                 console.log("Splatfest Inserted");
                 if (error) {
                     console.error(error);
@@ -178,7 +177,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
 async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
-    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `splatfest_win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`splatfestId` AND `winTeam`.`data` = ? LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` WHERE `splatfest_splatfest`.`slug` = ?';
+    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `splatfest_win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`splatfestId` AND `winTeam`.`data` = ? LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` WHERE `splatfest_splatfest`.`slug` = ?';
     sqlconnection.query(getWinTeam, [item.winner, item.slug], function (error, events) {
         if (error) {
             console.error(error);

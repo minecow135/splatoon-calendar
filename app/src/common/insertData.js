@@ -1,7 +1,7 @@
 const sqlConnect = require('./sql.js');
 const errorSend = require('./errorSend.js');
 
-async function insertData(table, id, row, eventId) {
+async function insertData(table, id, row) {
     if (table && id && row) {
         let sqlconnection = await sqlConnect();
 
@@ -15,17 +15,9 @@ async function insertData(table, id, row, eventId) {
                 errorSend({ element, category, part, error });
             };
             if (!data || !data[0]) {
-                let sqlInsert = "";
-                let sqlData = [];
-
-                if (table == "messageTypes") {
-                    sqlInsert = "INSERT INTO ?? (`id`, eventId, `data`) VALUES (?, ?, ?);";
-                    sqlData = [ table, id, eventId, row ]
-                } else {
-                    sqlInsert = "INSERT INTO ?? (`id`, `data`) VALUES (?, ?);";
-                    sqlData = [ table, id, row ]
-                }
-                sqlconnection.query(sqlInsert, sqlData, function (error, data) {
+                let sqlInsert = "INSERT INTO ?? (`id`, `data`) VALUES (?, ?);";
+                
+                sqlconnection.query(sqlInsert, [ table, id, row ], function (error, data) {
                     if (error) {
                         console.error(error);
                         let element = "Setup";
