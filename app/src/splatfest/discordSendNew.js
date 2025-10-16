@@ -58,8 +58,9 @@ function createMsg(data, discord) {
 async function sendMsg(SplatCalData, id, discordChannel) {
     let sqlconnection = await sqlConnect();
     await until(_ => discordConnect.readyTimestamp);
-    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `splatfestId` = ? AND `messageType` = 1";
-    sqlconnection.query(sqlGetCalData, [ discordChannel, id ], async function (error, DiscordSent ) {
+    let messageType = "new";
+    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `splatfestId` = ? AND `messageType` = ?";
+    sqlconnection.query(sqlGetCalData, [ discordChannel, id, messageType ], async function (error, DiscordSent ) {
         if (error) {
             console.error(error);
             let element = "Splatfest";
@@ -69,8 +70,8 @@ async function sendMsg(SplatCalData, id, discordChannel) {
         };
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
-                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `splatfestId`, `messageType`) VALUES (?, ?, ?, '1')";
-                sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
+                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `splatfestId`, `messageType`) VALUES (?, ?, ?, ?)";
+                sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id, messageType ], function (error, events) {
                     if (error) {
                         console.error(error);
                         let element = "Splatfest";

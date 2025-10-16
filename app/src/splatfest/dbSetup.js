@@ -8,9 +8,6 @@ function sleep(ms) {
 }
 
 async function checkTables() {
-    let createTable_messageTypes = "CREATE TABLE `messageTypes` (`id` int(11) NOT NULL AUTO_INCREMENT, `data` varchar(15) NOT NULL, PRIMARY KEY (`id`));";
-    createTables("messageTypes", createTable_messageTypes);
-
     let createTable_splatfest_splatfest = "CREATE TABLE `splatfest_splatfest` (`id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgUrl` varchar(175) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`));";
     createTables("splatfest_splatfest", createTable_splatfest_splatfest);
 
@@ -24,7 +21,7 @@ async function checkTables() {
     let createTable_splatfest_win = "CREATE TABLE `splatfest_win` ( `id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `descId` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`descId`) REFERENCES `splatfest_teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("splatfest_win", createTable_splatfest_win);
 
-    let createTable_discordSent = "CREATE TABLE `discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `splatfestId` int(11) NOT NULL, `messageType` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`messageType`) REFERENCES `messageTypes` (`id`));";
+    let createTable_discordSent = "CREATE TABLE `discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `splatfestId` int(11) NOT NULL, `messageType` varchar(10) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("discordSent", createTable_discordSent);
 
     await sleep(20);
@@ -32,8 +29,7 @@ async function checkTables() {
 }
 
 async function insertRows() {
-    insertData("messageTypes", 1, "newSplatfest");
-    insertData("messageTypes", 2, "splatfestWin");
+    
 }
 
 module.exports = checkTables;
