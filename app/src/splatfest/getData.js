@@ -124,7 +124,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
     let startDateFirst = new Date(item.startDate);
     let endDateFirst = new Date(item.endDate);
     let created = new Date(Date.now());
-    let uid = nanoid() + "@splatfest.awdawd.eu";
+    let uid = nanoid();
 
     var sqlGetDate = 'SELECT COUNT(id) AS `count`, `id` FROM `splatfest_splatfest` WHERE `slug` = ?';
     sqlconnection.query(sqlGetDate, [slug], function (error, GetCount) {

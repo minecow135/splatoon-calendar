@@ -8,7 +8,7 @@ function sleep(ms) {
 }
 
 async function checkTables() {
-    let createTable_splatfest_splatfest = "CREATE TABLE `splatfest_splatfest` (`id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgLocation` varchar(150) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(50) NOT NULL, PRIMARY KEY (`id`));";
+    let createTable_splatfest_splatfest = "CREATE TABLE `splatfest_splatfest` (`id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(20) NOT NULL, `name` varchar(50) NOT NULL, `region` varchar(20) NOT NULL, `wikiUrl` varchar(120) NOT NULL, `imgLocation` varchar(150) NOT NULL, `slug` varchar(50) NOT NULL, `startDate` datetime NOT NULL, `endDate` datetime NOT NULL, `created` datetime NOT NULL, `uid` varchar(30) NOT NULL, PRIMARY KEY (`id`));";
     createTables("splatfest_splatfest", createTable_splatfest_splatfest);
 
     await sleep(20);
