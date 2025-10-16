@@ -41,7 +41,7 @@ function createMsg(data, discord) {
     };
 
     msg += "\n-# ";
-    msg += "[image](" + data.imgUrl + ") ";
+    msg += "[image](" + process.env.WEB_URL + data.imgLocation + ") ";
 
     return msg;
 }
@@ -80,7 +80,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 
 async function discordSend() {
     let sqlconnection = await sqlConnect();
-    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`team` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`teamId` = `splatfest_teams`.`id` WHERE `splatfest_win`.`teamId` IS NOT NULL';
+    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgLocation`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`team` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`teamId` = `splatfest_teams`.`id` WHERE `splatfest_win`.`teamId` IS NOT NULL';
     sqlconnection.query(sqlGetData, function (error, events) {
         if (error) {
             console.error(error);

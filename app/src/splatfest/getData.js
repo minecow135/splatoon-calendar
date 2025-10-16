@@ -99,14 +99,13 @@ async function getInfo() {
 
             let wikiUrl = "https://splatoonwiki.org" + teamLink.getAttribute('href');
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
-            let imgUrl = process.env.WEB_URL + imgLocation;
 
             descData.push({
                 name,
                 region,
                 wikiUrl,
                 teams,
-                imgUrl,
+                imgLocation,
                 startDate,
                 endDate,
                 winner,
@@ -137,8 +136,8 @@ async function insertOneSplatfest({ item, ignoreWin }) {
             errorSend({ element, category, part, error });
         }
         if (GetCount[0].count === 0) {
-            var sqlInsert = 'INSERT INTO `splatfest_splatfest` (`title`, `name`, `region`, `wikiUrl`, `imgUrl`,  `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            sqlconnection.query(sqlInsert, [title, item.name, item.region, item.wikiUrl, item.imgUrl, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
+            var sqlInsert = 'INSERT INTO `splatfest_splatfest` (`title`, `name`, `region`, `wikiUrl`, `imgLocation`,  `slug`, `startDate`, `endDate`, `created`, `uid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            sqlconnection.query(sqlInsert, [title, item.name, item.region, item.wikiUrl, item.imgLocation, slug, startDateFirst, endDateFirst, created, uid], function (error, insertResult) {
                 console.log("Splatfest Inserted");
                 if (error) {
                     console.error(error);
