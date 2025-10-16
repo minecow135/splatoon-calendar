@@ -21,7 +21,7 @@ async function checkTables() {
 
     await sleep(20);
 
-    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `dataCalId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatCal` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("splatfest_teams", createTable_splatfest_teams);
 
     await sleep(20);
