@@ -89,7 +89,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`imgUrl`, `splatCal`.`startDate`, `splatCal`.`endDate` FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
+    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate` FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` WHERE `eventTypes`.`data` = ?';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);

@@ -80,7 +80,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatCal`.`id`, `splatCal`.`title`, `splatCal`.`name`, `splatCal`.`region`, `splatCal`.`imgUrl`, `splatCal`.`startDate`, `splatCal`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatCal` LEFT JOIN `eventTypes` ON `splatCal`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatCal`.`id` = `win`.`calId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
+    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`calId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
