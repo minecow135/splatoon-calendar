@@ -196,7 +196,7 @@ async function insertWinner({ item }) {
             let part = "Insert winner 2";
             errorSend({ element, category, part, error });
         } else {
-            var sqlGetCalData = "INSERT INTO `splatfest_win` (`splatfestId`, `descId`) VALUES (?, ?)";
+            var sqlGetCalData = "INSERT INTO `splatfest_win` (`splatfestId`, `teamId`) VALUES (?, ?)";
             sqlconnection.query(sqlGetCalData, [events[0].id, events[0].winId], function (error, events) {
                 if (error) {
                     console.error(error);
