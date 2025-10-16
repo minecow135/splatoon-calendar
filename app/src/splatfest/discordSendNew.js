@@ -50,7 +50,7 @@ function createMsg(data, discord) {
     };
 
     msg += "\n-# ";
-    msg += "[image](" + process.env.WEB_URL + data.imgLocation + ") ";
+    msg += "[image](" + process.env.WEB_PROTOCOL + "://" + process.env.WEB_URL + data.imgLocation + ") ";
 
     return msg;
 }
