@@ -80,7 +80,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
+    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `splatfest_win`.`descId` IS NOT NULL';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
