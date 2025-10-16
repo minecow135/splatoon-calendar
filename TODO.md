@@ -13,6 +13,7 @@
             - splatfest.jpg
 
 ## Later
+- [ ] add apache container for split load
 - [ ] add random minute run
 - [ ] add send run directly after pulling
 - [ ] combine discord send files
