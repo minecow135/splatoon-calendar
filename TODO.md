@@ -3,13 +3,14 @@
 ## Next release (2.0.0)
 - [ ] change table names for easier expansion later
 - [ ] reorganize files after event type
-  - src/
+  - event/
     - splatfest/
       - splatfest.ics
       - splatfest.rss
-      - img/
+      - src/
         - $SPLATFEST_SLUG/
-          - splatfest.jpg
+          - img/
+            - splatfest.jpg
 
 ## Later
 - [ ] add random minute run
