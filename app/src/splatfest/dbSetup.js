@@ -21,15 +21,15 @@ async function checkTables() {
 
     await sleep(20);
 
-    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_splatfest_teams = "CREATE TABLE `splatfest_teams` (`id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `data` varchar(250) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("splatfest_teams", createTable_splatfest_teams);
 
     await sleep(20);
     
-    let createTable_win = "CREATE TABLE `win` ( `id` int(11) NOT NULL AUTO_INCREMENT, `calId` int(11) NOT NULL, `descId` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`descId`) REFERENCES `splatfest_teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
+    let createTable_win = "CREATE TABLE `win` ( `id` int(11) NOT NULL AUTO_INCREMENT, `splatfestId` int(11) NOT NULL, `descId` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`descId`) REFERENCES `splatfest_teams` (`id`) ON DELETE CASCADE ON UPDATE CASCADE);";
     createTables("win", createTable_win);
 
-    let createTable_discordSent = "CREATE TABLE `discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `calId` int(11) NOT NULL, `messageType` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`calId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`messageType`) REFERENCES `messageTypes` (`id`));";
+    let createTable_discordSent = "CREATE TABLE `discordSent` (`id` int(11) NOT NULL AUTO_INCREMENT, `channelId` decimal(25,0) NOT NULL, `messageId` decimal(25,0) NOT NULL, `splatfestId` int(11) NOT NULL, `messageType` int(11) NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`splatfestId`) REFERENCES `splatfest_splatfest` (`id`) ON DELETE CASCADE ON UPDATE CASCADE, FOREIGN KEY (`messageType`) REFERENCES `messageTypes` (`id`));";
     createTables("discordSent", createTable_discordSent);
 
     await sleep(20);

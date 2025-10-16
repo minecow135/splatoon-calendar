@@ -149,7 +149,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
                     errorSend({ element, category, part, error });
                 }
 
-                var sqlInsertDesc = 'INSERT INTO `splatfest_teams` (`CalId`, `data`) VALUES (?, ?)';
+                var sqlInsertDesc = 'INSERT INTO `splatfest_teams` (`splatfestId`, `data`) VALUES (?, ?)';
 
                 for (const team of item.teams) {
                     sqlconnection.query(sqlInsertDesc, [insertResult.insertId, team], function (error, insertResult) {
@@ -178,7 +178,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
 async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
-    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`calId` AND `winTeam`.`data` = ? LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`calId` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` WHERE `splatfest_splatfest`.`slug` = ?';
+    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`splatfestId` AND `winTeam`.`data` = ? LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`splatfestId` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` WHERE `splatfest_splatfest`.`slug` = ?';
     sqlconnection.query(getWinTeam, [item.winner, item.slug], function (error, events) {
         if (error) {
             console.error(error);
@@ -197,7 +197,7 @@ async function insertWinner({ item }) {
             let part = "Insert winner 2";
             errorSend({ element, category, part, error });
         } else {
-            var sqlGetCalData = "INSERT INTO `win` (`calId`, `descId`) VALUES (?, ?)";
+            var sqlGetCalData = "INSERT INTO `win` (`splatfestId`, `descId`) VALUES (?, ?)";
             sqlconnection.query(sqlGetCalData, [events[0].id, events[0].winId], function (error, events) {
                 if (error) {
                     console.error(error);

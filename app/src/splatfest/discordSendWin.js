@@ -49,7 +49,7 @@ function createMsg(data, discord) {
 async function sendMsg(SplatCalData, id, discordChannel) {
     let sqlconnection = await sqlConnect();
     await until(_ => discordConnect.readyTimestamp);
-    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `calId` = ? AND `messageType` = 2";
+    var sqlGetCalData = "SELECT COUNT(`id`) AS `count` FROM `discordSent` WHERE `channelId` = ? AND `splatfestId` = ? AND `messageType` = 2";
     sqlconnection.query(sqlGetCalData, [ discordChannel, id ], async function (error, DiscordSent ) {
         if (error) {
             console.error(error);
@@ -60,7 +60,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
         };
         if (DiscordSent[0].count == 0) {
             discordConnect.channels.cache.get(discordChannel).send( SplatCalData ).then(msg => {                
-                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `calId`, `messageType`) VALUES (?, ?, ?, '2')";
+                var sqlGetCalData = "INSERT INTO `discordSent` (`channelId`, `messageId`, `splatfestId`, `messageType`) VALUES (?, ?, ?, '2')";
                 sqlconnection.query(sqlGetCalData, [ discordChannel, msg.id, id ], function (error, events) {
                     if (error) {
                         console.error(error);
@@ -80,7 +80,7 @@ async function sendMsg(SplatCalData, id, discordChannel) {
 async function discordSend() {
     let sqlconnection = await sqlConnect();
     eventType = "splatfest";
-    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`calId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
+    var sqlGetData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`imgUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `eventTypes` ON `splatfest_splatfest`.`eventId` = `eventTypes`.`id` LEFT JOIN `win` ON `splatfest_splatfest`.`id` = `win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `win`.`descId` = `splatfest_teams`.`id` WHERE `eventTypes`.`data` = ? AND `win`.`descId` IS NOT NULL';
     sqlconnection.query(sqlGetData, [ eventType ], function (error, events) {
         if (error) {
             console.error(error);
