@@ -31,6 +31,7 @@
 
 ## Maybe later
 - [ ] add webpage with upcoming events
+- [ ] add webpage with past events
 - [ ] add subscribe page on website
   - [ ] discord server message
   - [ ] discord direct message?
