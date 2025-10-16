@@ -148,7 +148,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
                     errorSend({ element, category, part, error });
                 }
 
-                var sqlInsertDesc = 'INSERT INTO `splatfest_teams` (`splatfestId`, `data`) VALUES (?, ?)';
+                var sqlInsertDesc = 'INSERT INTO `splatfest_teams` (`splatfestId`, `team`) VALUES (?, ?)';
 
                 for (const team of item.teams) {
                     sqlconnection.query(sqlInsertDesc, [insertResult.insertId, team], function (error, insertResult) {
@@ -177,7 +177,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
 async function insertWinner({ item }) {
     let sqlconnection = await sqlConnect();
 
-    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`data` AS winName, `splatfest_win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`splatfestId` AND `winTeam`.`data` = ? LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` WHERE `splatfest_splatfest`.`slug` = ?';
+    var getWinTeam = 'SELECT `splatfest_splatfest`.`id`, `winTeam`.`id` AS winId, `winTeam`.`team` AS winName, `splatfest_win`.`id` AS winnerId FROM `splatfest_splatfest` LEFT JOIN `splatfest_teams` AS `winTeam` ON `splatfest_splatfest`.`id` = `winTeam`.`splatfestId` AND `winTeam`.`team` = ? LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` WHERE `splatfest_splatfest`.`slug` = ?';
     sqlconnection.query(getWinTeam, [item.winner, item.slug], function (error, events) {
         if (error) {
             console.error(error);

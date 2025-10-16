@@ -6,7 +6,7 @@ const errorSend = require('../common/errorSend.js');
 
 async function createIcs() {
     let sqlconnection = await sqlConnect();
-    var sqlGetCalData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`wikiUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_splatfest`.`created`, `splatfest_splatfest`.`uid`, `splatfest_teams`.`data` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`teamId` = `splatfest_teams`.`id`';
+    var sqlGetCalData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`wikiUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_splatfest`.`created`, `splatfest_splatfest`.`uid`, `splatfest_teams`.`team` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`teamId` = `splatfest_teams`.`id`';
     sqlconnection.query(sqlGetCalData, function (error, events) {
         if (error) {
             console.error(error);
@@ -16,7 +16,7 @@ async function createIcs() {
             errorSend({ element, category, part, error });
         };
         if (events) {
-            var sqlGetCalDescTeams = 'SELECT id, data FROM splatfest_teams;';
+            var sqlGetCalDescTeams = 'SELECT id, team FROM splatfest_teams;';
             sqlconnection.query(sqlGetCalDescTeams, function (error, teams) {
                 if (error) {
                     console.error(error);
@@ -34,7 +34,7 @@ async function createIcs() {
                         if (teamsStr != "") {
                             teamsStr += " vs. ";
                         }
-                        teamsStr += team.data;
+                        teamsStr += team.team;
                     }
 
                     description += event.region + ":";

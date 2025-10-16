@@ -35,7 +35,7 @@ function createMsg(data, discord) {
         } else {
             msg += ",  ";
         };
-        msg += team.data;
+        msg += team.team;
         count ++;
     };
 
@@ -100,7 +100,7 @@ async function discordSend() {
         };
         if (events && events.length > 0) {
             for (const event of events) {
-                var sqlGetCalDescTeams = 'SELECT id, data FROM splatfest_teams WHERE `splatfestId` = ?';
+                var sqlGetCalDescTeams = 'SELECT id, team FROM splatfest_teams WHERE `splatfestId` = ?';
                 sqlconnection.query(sqlGetCalDescTeams, [ event.id ], function (error, teams) {
                     if (error) {
                         console.error(error);
