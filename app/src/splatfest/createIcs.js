@@ -66,7 +66,7 @@ async function createIcs() {
 
                 console.log("Calendar updated");
 
-                let splatfestIcsDir = process.env.BASE_DIR_WEB + "/event/splatfest/"
+                let splatfestIcsDir = process.env.BASE_DIR_WEB + "/event/splatfest"
                 try {
                     if (!fs.existsSync(splatfestIcsDir)){
                         fs.mkdirSync(splatfestIcsDir, { recursive: true });
