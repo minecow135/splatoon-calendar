@@ -94,7 +94,15 @@ async function getInfo() {
                     errorSend({ element, category, part, error });
                 }
 
-                image.write(process.env.BASE_DIR_WEB + imgLocation);
+                try {
+                    image.write(process.env.BASE_DIR_WEB + imgLocation);
+                } catch (error) {
+                    console.error(error)
+                    let element = "Splatfest";
+                    let category = "Get data";
+                    let part = "Save image";
+                    errorSend({ element, category, part, error });
+                };
             });
 
             let wikiUrl = "https://splatoonwiki.org" + teamLink.getAttribute('href');

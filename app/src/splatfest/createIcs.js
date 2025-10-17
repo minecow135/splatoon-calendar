@@ -66,7 +66,15 @@ async function createIcs() {
 
                 console.log("Calendar updated");
 
-                writeFileSync(process.env.BASE_DIR_WEB + `/event/splatfest/splatfest.ics`, value);
+                try {
+                    writeFileSync(process.env.BASE_DIR_WEB + `/event/splatfest/splatfest.ics`, value);
+                } catch (error) {
+                    console.error(error)
+                    let element = "Splatfest";
+                    let category = "Create ICS";
+                    let part = "Save ics";
+                    errorSend({ element, category, part, error });
+                };
 
                 sqlconnection.end();
             });
