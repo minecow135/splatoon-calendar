@@ -1,5 +1,5 @@
-const createTables = require('../common/createTables.js');
-const insertData = require('../common/insertData.js');
+const createTables = require('../../common/createTables.js');
+const insertData = require('../../common/insertData.js');
 
 function sleep(ms) {
     return new Promise((resolve) => {
