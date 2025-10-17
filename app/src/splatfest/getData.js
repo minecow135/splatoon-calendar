@@ -98,7 +98,7 @@ async function getInfo() {
                 errorSend({ element, category, part, error });
             };
             
-            let imgLocation = imgDir + "/splatfest.jpg"
+            let imgLocation = splatfestImgDir + "/splatfest.jpg"
 
             Jimp.read("https:" + img, function (error, image) {
                 if (error) {
