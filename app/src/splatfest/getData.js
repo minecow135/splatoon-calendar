@@ -83,7 +83,21 @@ async function getInfo() {
             let { headName, region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
-            let imgLocation = "/event/splatfest/src/" + slug + "/img/splatfest.jpg"
+            let splatfestImgDir = process.env.BASE_DIR_WEB + "/event/splatfest/src/" + slug + "/img"
+            try {
+                if (!fs.existsSync(splatfestImgDir)){
+                    fs.mkdirSync(splatfestImgDir, { recursive: true });
+                    console.log("create dir splatfestImgDir " + slug);
+                }
+            } catch (error) {
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Create ICS";
+                let part = "create folder";
+                errorSend({ element, category, part, error });
+            };
+            
+            let imgLocation = imgDir + "/splatfest.jpg"
 
             Jimp.read("https:" + img, function (error, image) {
                 if (error) {

@@ -66,8 +66,22 @@ async function createIcs() {
 
                 console.log("Calendar updated");
 
+                let splatfestIcsDir = process.env.BASE_DIR_WEB + "/event/splatfest/"
                 try {
-                    fs.writeFileSync(process.env.BASE_DIR_WEB + `/event/splatfest/splatfest.ics`, value);
+                    if (!fs.existsSync(splatfestIcsDir)){
+                        fs.mkdirSync(splatfestIcsDir, { recursive: true });
+                        console.log("create dir splatfestIcsDir");
+                    }
+                } catch (error) {
+                    console.error(error)
+                    let element = "Splatfest";
+                    let category = "Create ICS";
+                    let part = "create folder";
+                    errorSend({ element, category, part, error });
+                };
+
+                try {
+                    fs.writeFileSync(splatfestIcsDir + `/splatfest.ics`, value);
                 } catch (error) {
                     console.error(error)
                     let element = "Splatfest";
