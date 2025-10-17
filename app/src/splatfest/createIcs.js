@@ -1,5 +1,5 @@
 const ics = require('ics');
-const { writeFileSync } = require('fs');
+const fs = require('fs');
 
 const sqlConnect = require('../common/sql.js');
 const errorSend = require('../common/errorSend.js');
@@ -67,7 +67,7 @@ async function createIcs() {
                 console.log("Calendar updated");
 
                 try {
-                    writeFileSync(process.env.BASE_DIR_WEB + `/event/splatfest/splatfest.ics`, value);
+                    fs.writeFileSync(process.env.BASE_DIR_WEB + `/event/splatfest/splatfest.ics`, value);
                 } catch (error) {
                     console.error(error)
                     let element = "Splatfest";
