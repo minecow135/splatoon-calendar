@@ -24,6 +24,7 @@
 - [ ] move alert config to db
 - [ ] add more alert types
   - [ ] discord event
+  - [ ] webhook
   - [ ] rss
   - [ ] email?
 - [ ] add splatoon info updates
