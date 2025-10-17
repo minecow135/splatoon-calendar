@@ -378,6 +378,5 @@ yarn-error.log*
 markdown-cheat-sheet.md
 
 # spesific for this project
-*.ics
-web/img/src/
+**/event/
 database/

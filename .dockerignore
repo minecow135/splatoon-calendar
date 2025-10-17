@@ -13,6 +13,5 @@ LICENSE
 **/node_modules
 **/*.log
 
-**/*.ics
-web/img/src/
+**/event/
 database/
