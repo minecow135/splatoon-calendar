@@ -159,7 +159,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
             console.error(error);
             let element = "Splatfest";
             let category = "Get data";
-            let part = "Splatfest Insert 1";
+            let part = "Splatfest check slug";
             errorSend({ element, category, part, error });
         }
         if (GetCount[0].count === 0) {
@@ -170,7 +170,7 @@ async function insertOneSplatfest({ item, ignoreWin }) {
                     console.error(error);
                     let element = "Splatfest";
                     let category = "Get data";
-                    let part = "Splatfest Insert 2";
+                    let part = "Splatfest Insert";
                     errorSend({ element, category, part, error });
                 }
 
