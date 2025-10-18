@@ -2,6 +2,7 @@ FROM alpine:3.21
 
 ARG UGNAME=splatcal
 
+ENV BASE_DIR=/usr/local/splatcal
 ENV BASE_DIR_WEB=/usr/local/splatcal/web
 
 RUN addgroup -g 1000 ${UGNAME}
@@ -11,11 +12,13 @@ RUN apk add apache2
 
 RUN apk add nodejs npm
 
-RUN mkdir -p /usr/local/splatcal/
+RUN mkdir -p ${BASE_DIR}
+RUN mkdir -p ${BASE_DIR_WEB}
 
-COPY . /usr/local/splatcal/
+COPY . ${BASE_DIR}
 
-RUN chown -R ${UGNAME}:${UGNAME} /usr/local/splatcal
+RUN chown -R ${UGNAME}:${UGNAME} ${BASE_DIR}
+RUN chown -R ${UGNAME}:${UGNAME} ${BASE_DIR_WEB}
 
 RUN chown -R ${UGNAME}:${UGNAME} /var/log/apache2
 RUN chown -R ${UGNAME}:${UGNAME} /usr/lib/apache2
@@ -25,7 +28,7 @@ USER ${UGNAME}
 
 COPY ./lib/apache/httpd.conf /etc/apache2/
 
-WORKDIR /usr/local/splatcal/app
+WORKDIR ${BASE_DIR}/app
 
 RUN npm install --omit=dev
 
