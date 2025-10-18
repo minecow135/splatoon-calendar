@@ -1,6 +1,6 @@
 services:
   splatcal:
-    image: git.awdawd.eu/awd/splatcal:v2.0.0
+    image: git.awdawd.eu/awd/splatcal:v2.0
     volumes:
       - ./web:/usr/local/splatcal/web
     restart: unless-stopped
