@@ -10,7 +10,7 @@ services:
           ignore:
             - node_modules/
         - action: rebuild
-          path: ./node/package.json
+          path: ./app/package.json
     depends_on:
       db:
         condition: service_healthy
