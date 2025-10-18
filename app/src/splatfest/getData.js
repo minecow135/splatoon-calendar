@@ -87,6 +87,63 @@ async function getInfo() {
         if (teamdata) {
             let { headName, region, teamsStr, img, name, startDate, endDate, winner } = teamdata
 
+            if (!headName) {
+                let error = "headName variable empty"
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!region) {
+                let error = "region variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!teamsStr) {
+                let error = "teamsStr variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!img) {
+                let error = "img variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!name) {
+                let error = "name variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!startDate) {
+                let error = "startDate variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+            if (!endDate) {
+                let error = "endDate variable empty in " + headName
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "pull data";
+                errorSend({ element, category, part, error });
+            };
+
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
             let splatfestImgDir = process.env.BASE_DIR_WEB + "/event/splatfest/src/" + slug + "/img"
             try {
