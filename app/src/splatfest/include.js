@@ -8,6 +8,10 @@ const createIcs = require('./createIcs.js');
 const discordSendNew = require('./discordSendNew.js');
 const discordSendWin = require('./discordSendWin.js');
 
+if (!process.env.SPLATFEST_RUN_HOUR) {
+    throw "env variable SPLATFEST_RUN_HOUR not set"
+}
+
 const run = Number(process.env.SPLATFEST_RUN_HOUR)
 const runFirst = Number(process.env.SPLATFEST_RUN_HOUR) - 1
 

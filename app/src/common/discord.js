@@ -1,5 +1,15 @@
 const { Client, Events, GatewayIntentBits, ActivityType } = require('discord.js');
 
+if (!process.env.BOT_TOKEN) {
+  throw "env variable BOT_TOKEN not set"
+}
+if (!process.env.BOT_ACTIVITY) {
+  throw "env variable BOT_ACTIVITY not set"
+}
+if (!process.env.BOT_ACTIVITY_TYPE) {
+  throw "env variable BOT_ACTIVITY_TYPE not set"
+}
+
 const token = process.env.BOT_TOKEN;
 
 // Create a new discordConnect instance

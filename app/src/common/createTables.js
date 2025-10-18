@@ -1,6 +1,10 @@
 const sqlConnect = require('./sql.js');
 const errorSend = require('./errorSend.js');
 
+if (!process.env.DB_NAME) {
+  throw "env variable DB_NAME not set"
+}
+
 async function createTables(table, createTable) {
     if (table && createTable) {
         let sqlconnection = await sqlConnect();

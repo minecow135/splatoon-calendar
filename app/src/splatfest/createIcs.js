@@ -4,6 +4,13 @@ const fs = require('fs');
 const sqlConnect = require('../common/sql.js');
 const errorSend = require('../common/errorSend.js');
 
+if (!process.env.WEB_URL) {
+    throw "env variable WEB_URL not set"
+}
+if (!process.env.BASE_DIR_WEB) {
+    throw "env variable BASE_DIR_WEB not set"
+}
+
 async function createIcs() {
     let sqlconnection = await sqlConnect();
     var sqlGetCalData = 'SELECT `splatfest_splatfest`.`id`, `splatfest_splatfest`.`title`, `splatfest_splatfest`.`name`, `splatfest_splatfest`.`region`, `splatfest_splatfest`.`wikiUrl`, `splatfest_splatfest`.`startDate`, `splatfest_splatfest`.`endDate`, `splatfest_splatfest`.`created`, `splatfest_splatfest`.`uid`, `splatfest_teams`.`team` AS winner FROM `splatfest_splatfest` LEFT JOIN `splatfest_win` ON `splatfest_splatfest`.`id` = `splatfest_win`.`splatfestId` LEFT JOIN `splatfest_teams` ON `splatfest_win`.`teamId` = `splatfest_teams`.`id`';

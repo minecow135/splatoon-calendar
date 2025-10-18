@@ -7,6 +7,10 @@ const fs = require('fs');
 const sqlConnect = require('../common/sql.js');
 const errorSend = require('../common/errorSend.js');
 
+if (!process.env.BASE_DIR_WEB) {
+    throw "env variable BASE_DIR_WEB not set"
+}
+
 async function pullData() {
     webValue = await axios.get("https://splatoonwiki.org/wiki/Main_Page/Splatfest").then(function (response) {
         // handle success

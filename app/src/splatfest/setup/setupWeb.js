@@ -2,6 +2,13 @@ const fs = require("fs");
 
 const errorSend = require('../../common/errorSend.js');
 
+if (!process.env.BASE_DIR) {
+  throw "env variable BASE_DIR not set"
+}
+if (!process.env.BASE_DIR_WEB) {
+  throw "env variable BASE_DIR_WEB not set"
+}
+
 function createWeb() {
   if (!process.env.WEB_NO_TEMPLATE || process.env.WEB_NO_TEMPLATE == "false") {
     webDirTemplate = process.env.BASE_DIR + "/webTemplate";
@@ -21,7 +28,7 @@ function createWeb() {
       let part = "create folder";
       errorSend({ element, category, part, error });
     }
-    
+
     fs.cp(webDirTemplate, webDir, { recursive: true }, (error) => {
       if (error) {
         console.error(error);

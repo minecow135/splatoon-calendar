@@ -2,6 +2,13 @@ const sqlConnect = require('../common/sql.js');
 const errorSend = require('../common/errorSend.js');
 const discordConnect = require('../common/discord.js');
 
+if (!process.env.WEB_PROTOCOL) {
+    throw "env variable WEB_PROTOCOL not set"
+}
+if (!process.env.WEB_URL) {
+    throw "env variable WEB_URL not set"
+}
+
 function getEnv(prefix) {
     const obj = process.env;
     const regex = new RegExp('^' + prefix.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
