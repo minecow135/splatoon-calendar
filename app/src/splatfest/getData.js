@@ -145,10 +145,10 @@ async function getInfo() {
             };
 
             let slug = headName.replace(/[^A-Z0-9]+/ig, "_").replace(/^_*/, "").replace(/_*$/, "");
-            let splatfestImgDir = process.env.BASE_DIR_WEB + "/event/splatfest/src/" + slug + "/img"
+            let splatfestImgDir = "/event/splatfest/src/" + slug + "/img"
             try {
-                if (!fs.existsSync(splatfestImgDir)){
-                    fs.mkdirSync(splatfestImgDir, { recursive: true });
+                if (!fs.existsSync(process.env.BASE_DIR_WEB + splatfestImgDir)){
+                    fs.mkdirSync(process.env.BASE_DIR_WEB + splatfestImgDir, { recursive: true });
                     console.log("create dir splatfestImgDir " + slug);
                 }
             } catch (error) {
