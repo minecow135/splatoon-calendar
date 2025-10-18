@@ -33,19 +33,15 @@ async function splatfest() {
     discordSendNew();
     discordSendWin();
     
-    if (!run || !runFirst) {
-        console.error("run not defined")
-    } else {
-        cron.schedule('0 45 ' + runFirst + ' * * *', () => {
-            getData();
-        });
+    cron.schedule('0 45 ' + runFirst + ' * * *', () => {
+        getData();
+    });
 
-        cron.schedule('0 0 ' + run + ' * * *', () => {
-            discordSendNew();
-            discordSendWin();
-            createIcs();
-        });
-    }
+    cron.schedule('0 0 ' + run + ' * * *', () => {
+        discordSendNew();
+        discordSendWin();
+        createIcs();
+    });
 };
 
 module.exports = splatfest;
