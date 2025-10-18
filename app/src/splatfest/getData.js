@@ -97,7 +97,7 @@ async function getInfo() {
             } catch (error) {
                 console.error(error)
                 let element = "Splatfest";
-                let category = "Create ICS";
+                let category = "Get data";
                 let part = "create folder";
                 errorSend({ element, category, part, error });
             };
