@@ -13,5 +13,5 @@ LICENSE
 **/node_modules
 **/*.log
 
-**/event/
+web/
 database/

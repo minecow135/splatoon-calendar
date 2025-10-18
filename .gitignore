@@ -378,5 +378,5 @@ yarn-error.log*
 markdown-cheat-sheet.md
 
 # spesific for this project
-**/event/
+web/
 database/
