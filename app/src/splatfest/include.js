@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 
 const setupDb = require("./setup/setupDb.js");
+const setupWeb = require("./setup/setupWeb.js");
 
 const getData = require ("./getData.js");
 const createIcs = require('./createIcs.js');
@@ -18,6 +19,7 @@ function sleep(ms) {
 
 async function splatfest() {
     setupDb();
+    setupWeb();
 
     await sleep(1000);
 
