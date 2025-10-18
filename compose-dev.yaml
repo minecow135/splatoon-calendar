@@ -21,7 +21,6 @@ services:
 
   db:
     image: mariadb:11
-    restart: always
     #volumes:
     #  - ./database:/var/lib/mysql
     healthcheck:
