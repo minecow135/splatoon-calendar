@@ -5,7 +5,7 @@ if (!process.env.DB_NAME) {
   throw "env variable DB_NAME not set"
 }
 
-async function createTables(table, createTable) {
+async function createTables(table, createTable, errElement) {
     if (table && createTable) {
         let sqlconnection = await sqlConnect();
 
@@ -13,7 +13,7 @@ async function createTables(table, createTable) {
         sqlconnection.query(sql, [ process.env.DB_NAME, table ], function (error, data) {
         if (error) {
             console.error(error);
-            let element = "Setup";
+            let element = "Setup " + errElement;
             let category = "Create tables";
             let part = "Check";
             errorSend({ element, category, part, error });
@@ -22,7 +22,7 @@ async function createTables(table, createTable) {
                 sqlconnection.query(createTable, [ table ], function (error, data) {
                     if (error) {
                         console.error(error);
-                        let element = "Setup";
+                        let element = "Setup " + errElement;
                         let category = "Create tables";
                         let part = "Insert";
                         errorSend({ element, category, part, error });

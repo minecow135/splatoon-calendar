@@ -1,7 +1,7 @@
 const sqlConnect = require('./sql.js');
 const errorSend = require('./errorSend.js');
 
-async function insertData(table, id, row) {
+async function insertData(table, id, row, errElement) {
     if (table && id && row) {
         let sqlconnection = await sqlConnect();
 
@@ -9,7 +9,7 @@ async function insertData(table, id, row) {
         sqlconnection.query(sql, [ table, row ], function (error, data) {
             if (error) {
                 console.error(error);
-                let element = "Setup";
+                let element = "Setup " + errElement;
                 let category = "Insert data";
                 let part = "Check";
                 errorSend({ element, category, part, error });
@@ -20,7 +20,7 @@ async function insertData(table, id, row) {
                 sqlconnection.query(sqlInsert, [ table, id, row ], function (error, data) {
                     if (error) {
                         console.error(error);
-                        let element = "Setup";
+                        let element = "Setup " + errElement;
                         let category = "Insert data";
                         let part = "Insert";
                         errorSend({ element, category, part, error });
