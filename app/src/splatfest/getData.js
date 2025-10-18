@@ -161,25 +161,17 @@ async function getInfo() {
             
             let imgLocation = splatfestImgDir + "/splatfest.jpg"
 
-            Jimp.read("https:" + img, function (error, image) {
-                if (error) {
-                    console.error(error);
-                    let element = "Splatfest";
-                    let category = "Get data";
-                    let part = "Read image";
-                    errorSend({ element, category, part, error });
-                }
+            try {
+                let image = await Jimp.read("https:" + img);
 
-                try {
-                    image.write(process.env.BASE_DIR_WEB + imgLocation);
-                } catch (error) {
-                    console.error(error)
-                    let element = "Splatfest";
-                    let category = "Get data";
-                    let part = "Save image";
-                    errorSend({ element, category, part, error });
-                };
-            });
+                await image.write(process.env.BASE_DIR_WEB + imgLocation);
+            } catch (error) {
+                console.error(error)
+                let element = "Splatfest";
+                let category = "Get data";
+                let part = "Save image";
+                errorSend({ element, category, part, error });
+            };
 
             let wikiUrl = "https://splatoonwiki.org" + teamLink.getAttribute('href');
             let teams = teamsStr.split(/\s{2,}/).map(s => s.trim());
