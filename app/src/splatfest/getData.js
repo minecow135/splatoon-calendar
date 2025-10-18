@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { JSDOM } = require('jsdom');
 const { nanoid } = require('nanoid');
-const Jimp = require("jimp");
+const { Jimp } = require("jimp");
 const fs = require('fs');
 
 const sqlConnect = require('../common/sql.js');
