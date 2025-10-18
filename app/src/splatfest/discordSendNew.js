@@ -112,7 +112,7 @@ async function discordSend() {
 
                     event.teams = teams
 
-                    const env = getEnv("splatfestNew");
+                    const env = getEnv("SPLATFEST_NEW");
                     for (const item of env) {
                         msg = createMsg(event, item);
                         sendMsg(msg, event.id, item[0]);

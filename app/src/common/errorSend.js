@@ -48,7 +48,7 @@ async function sendMsg(SplatCalData, discordChannel) {
 };
 
 async function discordSend(error) {
-  const env = getEnv("error");
+  const env = getEnv("ERROR");
   for (const item of env) {
     msg = createMsg(error, item);
     sendMsg(msg, item[0]);

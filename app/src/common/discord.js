@@ -1,6 +1,6 @@
 const { Client, Events, GatewayIntentBits, ActivityType } = require('discord.js');
 
-const token = process.env.botToken;
+const token = process.env.BOT_TOKEN;
 
 // Create a new discordConnect instance
 const discordConnect = new Client({ intents: [GatewayIntentBits.Guilds] });
