@@ -289,7 +289,9 @@ async function insertWinner({ item }) {
 
 async function getData() {
     try {
-        let data = await getInfo();
+        if ( !process.env.DISABLE_UPDATES_PULL ) {
+            let data = await getInfo();
+        }
 
         ignoreWin = [
             "tbd",
